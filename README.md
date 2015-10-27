@@ -1,5 +1,5 @@
-Processing SEC filings using Altova RaptorXML+XBRL
-==================================================
+Creating a SQLlite financial reporting database from XBRL filings in the SEC EDGAR system using Altova RaptorXML+XBRL
+=====================================================================================================================
 
 Introduction
 ------------
