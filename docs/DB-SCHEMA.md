@@ -292,13 +292,13 @@ The following formulas where used to calculate the ratios in the `ratios` table:
 Working Capital                = Current Assets - Current Liabilities  
 Current Ratio                  = Current Assets / Current Liabilities  
 Quick Ratio                    = (Cash&Equivalents + Short-term Investments + Accounts Receivable) / Current Liabilities  
-Cash Ratio                     = (Cash&Equivalents + Invested Funds) / Current Liabilities  
+Cash Ratio                     = Cash&Equivalents  / Current Liabilities  
 
 ### Profitability
 Gross Profit Margin            = Gross Profit / Revenues  
 Operating Profit Margin        = Operating Income / Revenues  
 Pretax Profit Margin           = Pretax Income / Revenues  
-Net Income Margin              = Net Income / Revenues  
+Net Profit Margin              = Net Income / Revenues  
 Effective Tax Rate             = Income Tax Expense / Pretax Income  
 
 ### Returns
@@ -326,7 +326,4 @@ Free Cash Flow/OCF             = (Operating Cash Flow - Capital Expenditure) / O
 Short-term Debt Coverage       = Operating Cash Flow / Short-term Debt  
 Capital Expenditure Coverage   = Operating Cash Flow / Capital Expenditure  
 Dividend Coverage              = Operating Cash Flow / Dividend  
-Free Cash Flow/OCF             = (Operating Cash Flow - Capital Expenditure) / Operating Cash Flow  
-Short-term Debt Coverage       = Operating Cash Flow / Short-term Debt  
-Capital Expenditure Coverage   = Operating Cash Flow / Capital Expenditure  
-Dividend Coverage              = Operating Cash Flow / Dividend  
+
