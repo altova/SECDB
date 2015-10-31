@@ -2303,16 +2303,16 @@
 										<style align="left" name="Label465" text="Current Ratio" textColor="black" textSize_x="$PERSISTENT/Root/TextSize/Small"/>
 									</DesignLabel>
 									<DesignLabel id="6033">
-										<style align="right" format="0.00%" name="Label466" text_x="$ratios/DB/RowSet/Row[@duration = (if ( $PERSISTENT/Root/View = &quot;Quarterly&quot; ) then 3 else 12)][1]/@currentRatio" textColor="black" textSize_x="$PERSISTENT/Root/TextSize/Small"/>
+										<style align="right" format="0.00" name="Label466" text_x="$ratios/DB/RowSet/Row[@duration = (if ( $PERSISTENT/Root/View = &quot;Quarterly&quot; ) then 3 else 12)][1]/@currentRatio" textColor="black" textSize_x="$PERSISTENT/Root/TextSize/Small"/>
 									</DesignLabel>
 									<DesignLabel id="6035">
-										<style align="right" format="0.00%" name="Label467" text_x="$ratios/DB/RowSet/Row[@duration = (if ( $PERSISTENT/Root/View = &quot;Quarterly&quot; ) then 3 else 12)][2]/@currentRatio" textColor="black" textSize_x="$PERSISTENT/Root/TextSize/Small"/>
+										<style align="right" format="0.00" name="Label467" text_x="$ratios/DB/RowSet/Row[@duration = (if ( $PERSISTENT/Root/View = &quot;Quarterly&quot; ) then 3 else 12)][2]/@currentRatio" textColor="black" textSize_x="$PERSISTENT/Root/TextSize/Small"/>
 									</DesignLabel>
 									<DesignLabel id="6037">
-										<style align="right" format="0.00%" name="Label468" text_x="$ratios/DB/RowSet/Row[@duration = (if ( $PERSISTENT/Root/View = &quot;Quarterly&quot; ) then 3 else 12)][3]/@currentRatio" textColor="black" textSize_x="$PERSISTENT/Root/TextSize/Small"/>
+										<style align="right" format="0.00" name="Label468" text_x="$ratios/DB/RowSet/Row[@duration = (if ( $PERSISTENT/Root/View = &quot;Quarterly&quot; ) then 3 else 12)][3]/@currentRatio" textColor="black" textSize_x="$PERSISTENT/Root/TextSize/Small"/>
 									</DesignLabel>
 									<DesignLabel id="6039">
-										<style align="right" format="0.00%" name="Label469" text_x="$ratios/DB/RowSet/Row[@duration = (if ( $PERSISTENT/Root/View = &quot;Quarterly&quot; ) then 3 else 12)][4]/@currentRatio" textColor="black" textSize_x="$PERSISTENT/Root/TextSize/Small"/>
+										<style align="right" format="0.00" name="Label469" text_x="$ratios/DB/RowSet/Row[@duration = (if ( $PERSISTENT/Root/View = &quot;Quarterly&quot; ) then 3 else 12)][4]/@currentRatio" textColor="black" textSize_x="$PERSISTENT/Root/TextSize/Small"/>
 									</DesignLabel>
 								</children>
 							</DesignTableRow>
@@ -2322,16 +2322,16 @@
 										<style align="left" name="Label470" text="Quick Ratio" textColor="black" textSize_x="$PERSISTENT/Root/TextSize/Small"/>
 									</DesignLabel>
 									<DesignLabel id="6043">
-										<style align="right" format="0.00%" name="Label471" text_x="$ratios/DB/RowSet/Row[@duration = (if ( $PERSISTENT/Root/View = &quot;Quarterly&quot; ) then 3 else 12)][1]/@quickRatio" textColor="black" textSize_x="$PERSISTENT/Root/TextSize/Small"/>
+										<style align="right" format="0.00" name="Label471" text_x="$ratios/DB/RowSet/Row[@duration = (if ( $PERSISTENT/Root/View = &quot;Quarterly&quot; ) then 3 else 12)][1]/@quickRatio" textColor="black" textSize_x="$PERSISTENT/Root/TextSize/Small"/>
 									</DesignLabel>
 									<DesignLabel id="6045">
-										<style align="right" format="0.00%" name="Label472" text_x="$ratios/DB/RowSet/Row[@duration = (if ( $PERSISTENT/Root/View = &quot;Quarterly&quot; ) then 3 else 12)][2]/@quickRatio" textColor="black" textSize_x="$PERSISTENT/Root/TextSize/Small"/>
+										<style align="right" format="0.00" name="Label472" text_x="$ratios/DB/RowSet/Row[@duration = (if ( $PERSISTENT/Root/View = &quot;Quarterly&quot; ) then 3 else 12)][2]/@quickRatio" textColor="black" textSize_x="$PERSISTENT/Root/TextSize/Small"/>
 									</DesignLabel>
 									<DesignLabel id="6047">
-										<style align="right" format="0.00%" name="Label473" text_x="$ratios/DB/RowSet/Row[@duration = (if ( $PERSISTENT/Root/View = &quot;Quarterly&quot; ) then 3 else 12)][3]/@quickRatio" textColor="black" textSize_x="$PERSISTENT/Root/TextSize/Small"/>
+										<style align="right" format="0.00" name="Label473" text_x="$ratios/DB/RowSet/Row[@duration = (if ( $PERSISTENT/Root/View = &quot;Quarterly&quot; ) then 3 else 12)][3]/@quickRatio" textColor="black" textSize_x="$PERSISTENT/Root/TextSize/Small"/>
 									</DesignLabel>
 									<DesignLabel id="6049">
-										<style align="right" format="0.00%" name="Label474" text_x="$ratios/DB/RowSet/Row[@duration = (if ( $PERSISTENT/Root/View = &quot;Quarterly&quot; ) then 3 else 12)][4]/@quickRatio" textColor="black" textSize_x="$PERSISTENT/Root/TextSize/Small"/>
+										<style align="right" format="0.00" name="Label474" text_x="$ratios/DB/RowSet/Row[@duration = (if ( $PERSISTENT/Root/View = &quot;Quarterly&quot; ) then 3 else 12)][4]/@quickRatio" textColor="black" textSize_x="$PERSISTENT/Root/TextSize/Small"/>
 									</DesignLabel>
 								</children>
 							</DesignTableRow>
@@ -2341,16 +2341,16 @@
 										<style align="left" name="Label475" text="Cash Ratio" textColor="black" textSize_x="$PERSISTENT/Root/TextSize/Small"/>
 									</DesignLabel>
 									<DesignLabel id="6053">
-										<style align="right" format="0.00%" name="Label476" text_x="$ratios/DB/RowSet/Row[@duration = (if ( $PERSISTENT/Root/View = &quot;Quarterly&quot; ) then 3 else 12)][1]/@cashRatio" textColor="black" textSize_x="$PERSISTENT/Root/TextSize/Small"/>
+										<style align="right" format="0.00" name="Label476" text_x="$ratios/DB/RowSet/Row[@duration = (if ( $PERSISTENT/Root/View = &quot;Quarterly&quot; ) then 3 else 12)][1]/@cashRatio" textColor="black" textSize_x="$PERSISTENT/Root/TextSize/Small"/>
 									</DesignLabel>
 									<DesignLabel id="6055">
-										<style align="right" format="0.00%" name="Label477" text_x="$ratios/DB/RowSet/Row[@duration = (if ( $PERSISTENT/Root/View = &quot;Quarterly&quot; ) then 3 else 12)][2]/@cashRatio" textColor="black" textSize_x="$PERSISTENT/Root/TextSize/Small"/>
+										<style align="right" format="0.00" name="Label477" text_x="$ratios/DB/RowSet/Row[@duration = (if ( $PERSISTENT/Root/View = &quot;Quarterly&quot; ) then 3 else 12)][2]/@cashRatio" textColor="black" textSize_x="$PERSISTENT/Root/TextSize/Small"/>
 									</DesignLabel>
 									<DesignLabel id="6057">
-										<style align="right" format="0.00%" name="Label478" text_x="$ratios/DB/RowSet/Row[@duration = (if ( $PERSISTENT/Root/View = &quot;Quarterly&quot; ) then 3 else 12)][3]/@cashRatio" textColor="black" textSize_x="$PERSISTENT/Root/TextSize/Small"/>
+										<style align="right" format="0.00" name="Label478" text_x="$ratios/DB/RowSet/Row[@duration = (if ( $PERSISTENT/Root/View = &quot;Quarterly&quot; ) then 3 else 12)][3]/@cashRatio" textColor="black" textSize_x="$PERSISTENT/Root/TextSize/Small"/>
 									</DesignLabel>
 									<DesignLabel id="6059">
-										<style align="right" format="0.00%" name="Label479" text_x="$ratios/DB/RowSet/Row[@duration = (if ( $PERSISTENT/Root/View = &quot;Quarterly&quot; ) then 3 else 12)][4]/@cashRatio" textColor="black" textSize_x="$PERSISTENT/Root/TextSize/Small"/>
+										<style align="right" format="0.00" name="Label479" text_x="$ratios/DB/RowSet/Row[@duration = (if ( $PERSISTENT/Root/View = &quot;Quarterly&quot; ) then 3 else 12)][4]/@cashRatio" textColor="black" textSize_x="$PERSISTENT/Root/TextSize/Small"/>
 									</DesignLabel>
 								</children>
 							</DesignTableRow>
@@ -2702,16 +2702,16 @@
 										<style align="left" name="Label594" text="Asset Turnover" textColor="black" textSize_x="$PERSISTENT/Root/TextSize/Small"/>
 									</DesignLabel>
 									<DesignLabel id="6146">
-										<style align="right" format="0.00%" name="Label595" text_x="$ratios/DB/RowSet/Row[@duration = (if ( $PERSISTENT/Root/View = &quot;Quarterly&quot; ) then 3 else 12)][1]/@assetTurnover" textColor="black" textSize_x="$PERSISTENT/Root/TextSize/Small"/>
+										<style align="right" format="0.00x" name="Label595" text_x="$ratios/DB/RowSet/Row[@duration = (if ( $PERSISTENT/Root/View = &quot;Quarterly&quot; ) then 3 else 12)][1]/@assetTurnover" textColor="black" textSize_x="$PERSISTENT/Root/TextSize/Small"/>
 									</DesignLabel>
 									<DesignLabel id="6148">
-										<style align="right" format="0.00%" name="Label596" text_x="$ratios/DB/RowSet/Row[@duration = (if ( $PERSISTENT/Root/View = &quot;Quarterly&quot; ) then 3 else 12)][2]/@assetTurnover" textColor="black" textSize_x="$PERSISTENT/Root/TextSize/Small"/>
+										<style align="right" format="0.00x" name="Label596" text_x="$ratios/DB/RowSet/Row[@duration = (if ( $PERSISTENT/Root/View = &quot;Quarterly&quot; ) then 3 else 12)][2]/@assetTurnover" textColor="black" textSize_x="$PERSISTENT/Root/TextSize/Small"/>
 									</DesignLabel>
 									<DesignLabel id="6150">
-										<style align="right" format="0.00%" name="Label597" text_x="$ratios/DB/RowSet/Row[@duration = (if ( $PERSISTENT/Root/View = &quot;Quarterly&quot; ) then 3 else 12)][3]/@assetTurnover" textColor="black" textSize_x="$PERSISTENT/Root/TextSize/Small"/>
+										<style align="right" format="0.00x" name="Label597" text_x="$ratios/DB/RowSet/Row[@duration = (if ( $PERSISTENT/Root/View = &quot;Quarterly&quot; ) then 3 else 12)][3]/@assetTurnover" textColor="black" textSize_x="$PERSISTENT/Root/TextSize/Small"/>
 									</DesignLabel>
 									<DesignLabel id="6152">
-										<style align="right" format="0.00%" name="Label598" text_x="$ratios/DB/RowSet/Row[@duration = (if ( $PERSISTENT/Root/View = &quot;Quarterly&quot; ) then 3 else 12)][4]/@assetTurnover" textColor="black" textSize_x="$PERSISTENT/Root/TextSize/Small"/>
+										<style align="right" format="0.00x" name="Label598" text_x="$ratios/DB/RowSet/Row[@duration = (if ( $PERSISTENT/Root/View = &quot;Quarterly&quot; ) then 3 else 12)][4]/@assetTurnover" textColor="black" textSize_x="$PERSISTENT/Root/TextSize/Small"/>
 									</DesignLabel>
 								</children>
 							</DesignTableRow>
@@ -2721,16 +2721,16 @@
 										<style align="left" name="Label599" text="Fixed Asset Turnover" textColor="black" textSize_x="$PERSISTENT/Root/TextSize/Small"/>
 									</DesignLabel>
 									<DesignLabel id="6156">
-										<style align="right" format="0.00%" name="Label600" text_x="$ratios/DB/RowSet/Row[@duration = (if ( $PERSISTENT/Root/View = &quot;Quarterly&quot; ) then 3 else 12)][1]/@fixedAssertTurnover" textColor="black" textSize_x="$PERSISTENT/Root/TextSize/Small"/>
+										<style align="right" format="0.00x" name="Label600" text_x="$ratios/DB/RowSet/Row[@duration = (if ( $PERSISTENT/Root/View = &quot;Quarterly&quot; ) then 3 else 12)][1]/@fixedAssertTurnover" textColor="black" textSize_x="$PERSISTENT/Root/TextSize/Small"/>
 									</DesignLabel>
 									<DesignLabel id="6158">
-										<style align="right" format="0.00%" name="Label601" text_x="$ratios/DB/RowSet/Row[@duration = (if ( $PERSISTENT/Root/View = &quot;Quarterly&quot; ) then 3 else 12)][2]/@fixedAssertTurnover" textColor="black" textSize_x="$PERSISTENT/Root/TextSize/Small"/>
+										<style align="right" format="0.00x" name="Label601" text_x="$ratios/DB/RowSet/Row[@duration = (if ( $PERSISTENT/Root/View = &quot;Quarterly&quot; ) then 3 else 12)][2]/@fixedAssertTurnover" textColor="black" textSize_x="$PERSISTENT/Root/TextSize/Small"/>
 									</DesignLabel>
 									<DesignLabel id="6160">
-										<style align="right" format="0.00%" name="Label602" text_x="$ratios/DB/RowSet/Row[@duration = (if ( $PERSISTENT/Root/View = &quot;Quarterly&quot; ) then 3 else 12)][3]/@fixedAssertTurnover" textColor="black" textSize_x="$PERSISTENT/Root/TextSize/Small"/>
+										<style align="right" format="0.00x" name="Label602" text_x="$ratios/DB/RowSet/Row[@duration = (if ( $PERSISTENT/Root/View = &quot;Quarterly&quot; ) then 3 else 12)][3]/@fixedAssertTurnover" textColor="black" textSize_x="$PERSISTENT/Root/TextSize/Small"/>
 									</DesignLabel>
 									<DesignLabel id="6162">
-										<style align="right" format="0.00%" name="Label603" text_x="$ratios/DB/RowSet/Row[@duration = (if ( $PERSISTENT/Root/View = &quot;Quarterly&quot; ) then 3 else 12)][4]/@fixedAssertTurnover" textColor="black" textSize_x="$PERSISTENT/Root/TextSize/Small"/>
+										<style align="right" format="0.00x" name="Label603" text_x="$ratios/DB/RowSet/Row[@duration = (if ( $PERSISTENT/Root/View = &quot;Quarterly&quot; ) then 3 else 12)][4]/@fixedAssertTurnover" textColor="black" textSize_x="$PERSISTENT/Root/TextSize/Small"/>
 									</DesignLabel>
 								</children>
 							</DesignTableRow>
@@ -2740,16 +2740,16 @@
 										<style align="left" name="Label604" text="Receivables Turnover" textColor="black" textSize_x="$PERSISTENT/Root/TextSize/Small"/>
 									</DesignLabel>
 									<DesignLabel id="6166">
-										<style align="right" format="0.00%" name="Label605" text_x="$ratios/DB/RowSet/Row[@duration = (if ( $PERSISTENT/Root/View = &quot;Quarterly&quot; ) then 3 else 12)][1]/@receivablesTurnover" textColor="black" textSize_x="$PERSISTENT/Root/TextSize/Small"/>
+										<style align="right" format="0.00x" name="Label605" text_x="$ratios/DB/RowSet/Row[@duration = (if ( $PERSISTENT/Root/View = &quot;Quarterly&quot; ) then 3 else 12)][1]/@receivablesTurnover" textColor="black" textSize_x="$PERSISTENT/Root/TextSize/Small"/>
 									</DesignLabel>
 									<DesignLabel id="6168">
-										<style align="right" format="0.00%" name="Label606" text_x="$ratios/DB/RowSet/Row[@duration = (if ( $PERSISTENT/Root/View = &quot;Quarterly&quot; ) then 3 else 12)][2]/@receivablesTurnover" textColor="black" textSize_x="$PERSISTENT/Root/TextSize/Small"/>
+										<style align="right" format="0.00x" name="Label606" text_x="$ratios/DB/RowSet/Row[@duration = (if ( $PERSISTENT/Root/View = &quot;Quarterly&quot; ) then 3 else 12)][2]/@receivablesTurnover" textColor="black" textSize_x="$PERSISTENT/Root/TextSize/Small"/>
 									</DesignLabel>
 									<DesignLabel id="6170">
-										<style align="right" format="0.00%" name="Label607" text_x="$ratios/DB/RowSet/Row[@duration = (if ( $PERSISTENT/Root/View = &quot;Quarterly&quot; ) then 3 else 12)][3]/@receivablesTurnover" textColor="black" textSize_x="$PERSISTENT/Root/TextSize/Small"/>
+										<style align="right" format="0.00x" name="Label607" text_x="$ratios/DB/RowSet/Row[@duration = (if ( $PERSISTENT/Root/View = &quot;Quarterly&quot; ) then 3 else 12)][3]/@receivablesTurnover" textColor="black" textSize_x="$PERSISTENT/Root/TextSize/Small"/>
 									</DesignLabel>
 									<DesignLabel id="6172">
-										<style align="right" format="0.00%" name="Label608" text_x="$ratios/DB/RowSet/Row[@duration = (if ( $PERSISTENT/Root/View = &quot;Quarterly&quot; ) then 3 else 12)][4]/@receivablesTurnover" textColor="black" textSize_x="$PERSISTENT/Root/TextSize/Small"/>
+										<style align="right" format="0.00x" name="Label608" text_x="$ratios/DB/RowSet/Row[@duration = (if ( $PERSISTENT/Root/View = &quot;Quarterly&quot; ) then 3 else 12)][4]/@receivablesTurnover" textColor="black" textSize_x="$PERSISTENT/Root/TextSize/Small"/>
 									</DesignLabel>
 								</children>
 							</DesignTableRow>
@@ -2759,16 +2759,16 @@
 										<style align="left" name="Label609" text="Inventory Turnover" textColor="black" textSize_x="$PERSISTENT/Root/TextSize/Small"/>
 									</DesignLabel>
 									<DesignLabel id="6176">
-										<style align="right" format="0.00%" name="Label610" text_x="$ratios/DB/RowSet/Row[@duration = (if ( $PERSISTENT/Root/View = &quot;Quarterly&quot; ) then 3 else 12)][1]/@inventoryTurnover" textColor="black" textSize_x="$PERSISTENT/Root/TextSize/Small"/>
+										<style align="right" format="0.00x" name="Label610" text_x="$ratios/DB/RowSet/Row[@duration = (if ( $PERSISTENT/Root/View = &quot;Quarterly&quot; ) then 3 else 12)][1]/@inventoryTurnover" textColor="black" textSize_x="$PERSISTENT/Root/TextSize/Small"/>
 									</DesignLabel>
 									<DesignLabel id="6178">
-										<style align="right" format="0.00%" name="Label611" text_x="$ratios/DB/RowSet/Row[@duration = (if ( $PERSISTENT/Root/View = &quot;Quarterly&quot; ) then 3 else 12)][2]/@inventoryTurnover" textColor="black" textSize_x="$PERSISTENT/Root/TextSize/Small"/>
+										<style align="right" format="0.00x" name="Label611" text_x="$ratios/DB/RowSet/Row[@duration = (if ( $PERSISTENT/Root/View = &quot;Quarterly&quot; ) then 3 else 12)][2]/@inventoryTurnover" textColor="black" textSize_x="$PERSISTENT/Root/TextSize/Small"/>
 									</DesignLabel>
 									<DesignLabel id="6180">
-										<style align="right" format="0.00%" name="Label612" text_x="$ratios/DB/RowSet/Row[@duration = (if ( $PERSISTENT/Root/View = &quot;Quarterly&quot; ) then 3 else 12)][3]/@inventoryTurnover" textColor="black" textSize_x="$PERSISTENT/Root/TextSize/Small"/>
+										<style align="right" format="0.00x" name="Label612" text_x="$ratios/DB/RowSet/Row[@duration = (if ( $PERSISTENT/Root/View = &quot;Quarterly&quot; ) then 3 else 12)][3]/@inventoryTurnover" textColor="black" textSize_x="$PERSISTENT/Root/TextSize/Small"/>
 									</DesignLabel>
 									<DesignLabel id="6182">
-										<style align="right" format="0.00%" name="Label613" text_x="$ratios/DB/RowSet/Row[@duration = (if ( $PERSISTENT/Root/View = &quot;Quarterly&quot; ) then 3 else 12)][4]/@inventoryTurnover" textColor="black" textSize_x="$PERSISTENT/Root/TextSize/Small"/>
+										<style align="right" format="0.00x" name="Label613" text_x="$ratios/DB/RowSet/Row[@duration = (if ( $PERSISTENT/Root/View = &quot;Quarterly&quot; ) then 3 else 12)][4]/@inventoryTurnover" textColor="black" textSize_x="$PERSISTENT/Root/TextSize/Small"/>
 									</DesignLabel>
 								</children>
 							</DesignTableRow>
@@ -2835,16 +2835,16 @@
 										<style align="left" name="Label521" text="Short-term Debt Coverage" textColor="black" textSize_x="$PERSISTENT/Root/TextSize/Small"/>
 									</DesignLabel>
 									<DesignLabel id="5722">
-										<style align="right" format="0.00%" name="Label522" text_x="$ratios/DB/RowSet/Row[@duration = (if ( $PERSISTENT/Root/View = &quot;Quarterly&quot; ) then 3 else 12)][1]/@shortTermDebtCoverage" textColor="black" textSize_x="$PERSISTENT/Root/TextSize/Small"/>
+										<style align="right" format="0.00x" name="Label522" text_x="$ratios/DB/RowSet/Row[@duration = (if ( $PERSISTENT/Root/View = &quot;Quarterly&quot; ) then 3 else 12)][1]/@shortTermDebtCoverage" textColor="black" textSize_x="$PERSISTENT/Root/TextSize/Small"/>
 									</DesignLabel>
 									<DesignLabel id="5724">
-										<style align="right" format="0.00%" name="Label523" text_x="$ratios/DB/RowSet/Row[@duration = (if ( $PERSISTENT/Root/View = &quot;Quarterly&quot; ) then 3 else 12)][2]/@shortTermDebtCoverage" textColor="black" textSize_x="$PERSISTENT/Root/TextSize/Small"/>
+										<style align="right" format="0.00x" name="Label523" text_x="$ratios/DB/RowSet/Row[@duration = (if ( $PERSISTENT/Root/View = &quot;Quarterly&quot; ) then 3 else 12)][2]/@shortTermDebtCoverage" textColor="black" textSize_x="$PERSISTENT/Root/TextSize/Small"/>
 									</DesignLabel>
 									<DesignLabel id="5726">
-										<style align="right" format="0.00%" name="Label524" text_x="$ratios/DB/RowSet/Row[@duration = (if ( $PERSISTENT/Root/View = &quot;Quarterly&quot; ) then 3 else 12)][3]/@shortTermDebtCoverage" textColor="black" textSize_x="$PERSISTENT/Root/TextSize/Small"/>
+										<style align="right" format="0.00x" name="Label524" text_x="$ratios/DB/RowSet/Row[@duration = (if ( $PERSISTENT/Root/View = &quot;Quarterly&quot; ) then 3 else 12)][3]/@shortTermDebtCoverage" textColor="black" textSize_x="$PERSISTENT/Root/TextSize/Small"/>
 									</DesignLabel>
 									<DesignLabel id="5728">
-										<style align="right" format="0.00%" name="Label525" text_x="$ratios/DB/RowSet/Row[@duration = (if ( $PERSISTENT/Root/View = &quot;Quarterly&quot; ) then 3 else 12)][4]/@shortTermDebtCoverage" textColor="black" textSize_x="$PERSISTENT/Root/TextSize/Small"/>
+										<style align="right" format="0.00x" name="Label525" text_x="$ratios/DB/RowSet/Row[@duration = (if ( $PERSISTENT/Root/View = &quot;Quarterly&quot; ) then 3 else 12)][4]/@shortTermDebtCoverage" textColor="black" textSize_x="$PERSISTENT/Root/TextSize/Small"/>
 									</DesignLabel>
 								</children>
 							</DesignTableRow>
@@ -2854,16 +2854,16 @@
 										<style align="left" name="Label561" text="Capital Expense Coverage" textColor="black" textSize_x="$PERSISTENT/Root/TextSize/Small"/>
 									</DesignLabel>
 									<DesignLabel id="5733">
-										<style align="right" format="0.00%" name="Label562" text_x="- $ratios/DB/RowSet/Row[@duration = (if ( $PERSISTENT/Root/View = &quot;Quarterly&quot; ) then 3 else 12)][1]/@capitalExpenditureCoverage" textColor="black" textSize_x="$PERSISTENT/Root/TextSize/Small"/>
+										<style align="right" format="0.00x" name="Label562" text_x="- $ratios/DB/RowSet/Row[@duration = (if ( $PERSISTENT/Root/View = &quot;Quarterly&quot; ) then 3 else 12)][1]/@capitalExpenditureCoverage" textColor="black" textSize_x="$PERSISTENT/Root/TextSize/Small"/>
 									</DesignLabel>
 									<DesignLabel id="5735">
-										<style align="right" format="0.00%" name="Label563" text_x="- $ratios/DB/RowSet/Row[@duration = (if ( $PERSISTENT/Root/View = &quot;Quarterly&quot; ) then 3 else 12)][2]/@capitalExpenditureCoverage" textColor="black" textSize_x="$PERSISTENT/Root/TextSize/Small"/>
+										<style align="right" format="0.00x" name="Label563" text_x="- $ratios/DB/RowSet/Row[@duration = (if ( $PERSISTENT/Root/View = &quot;Quarterly&quot; ) then 3 else 12)][2]/@capitalExpenditureCoverage" textColor="black" textSize_x="$PERSISTENT/Root/TextSize/Small"/>
 									</DesignLabel>
 									<DesignLabel id="5737">
-										<style align="right" format="0.00%" name="Label564" text_x="- $ratios/DB/RowSet/Row[@duration = (if ( $PERSISTENT/Root/View = &quot;Quarterly&quot; ) then 3 else 12)][3]/@capitalExpenditureCoverage" textColor="black" textSize_x="$PERSISTENT/Root/TextSize/Small"/>
+										<style align="right" format="0.00x" name="Label564" text_x="- $ratios/DB/RowSet/Row[@duration = (if ( $PERSISTENT/Root/View = &quot;Quarterly&quot; ) then 3 else 12)][3]/@capitalExpenditureCoverage" textColor="black" textSize_x="$PERSISTENT/Root/TextSize/Small"/>
 									</DesignLabel>
 									<DesignLabel id="5739">
-										<style align="right" format="0.00%" name="Label565" text_x="- $ratios/DB/RowSet/Row[@duration = (if ( $PERSISTENT/Root/View = &quot;Quarterly&quot; ) then 3 else 12)][4]/@capitalExpenditureCoverage" textColor="black" textSize_x="$PERSISTENT/Root/TextSize/Small"/>
+										<style align="right" format="0.00x" name="Label565" text_x="- $ratios/DB/RowSet/Row[@duration = (if ( $PERSISTENT/Root/View = &quot;Quarterly&quot; ) then 3 else 12)][4]/@capitalExpenditureCoverage" textColor="black" textSize_x="$PERSISTENT/Root/TextSize/Small"/>
 									</DesignLabel>
 								</children>
 							</DesignTableRow>
@@ -2873,16 +2873,16 @@
 										<style align="left" name="Label571" text="Dividend Coverage" textColor="black" textSize_x="$PERSISTENT/Root/TextSize/Small"/>
 									</DesignLabel>
 									<DesignLabel id="5758">
-										<style align="right" format="0.00%" name="Label572" text_x="$ratios/DB/RowSet/Row[@duration = (if ( $PERSISTENT/Root/View = &quot;Quarterly&quot; ) then 3 else 12)][1]/@dividendCoverage" textColor="black" textSize_x="$PERSISTENT/Root/TextSize/Small"/>
+										<style align="right" format="0.00x" name="Label572" text_x="$ratios/DB/RowSet/Row[@duration = (if ( $PERSISTENT/Root/View = &quot;Quarterly&quot; ) then 3 else 12)][1]/@dividendCoverage" textColor="black" textSize_x="$PERSISTENT/Root/TextSize/Small"/>
 									</DesignLabel>
 									<DesignLabel id="5760">
-										<style align="right" format="0.00%" name="Label573" text_x="$ratios/DB/RowSet/Row[@duration = (if ( $PERSISTENT/Root/View = &quot;Quarterly&quot; ) then 3 else 12)][2]/@dividendCoverage" textColor="black" textSize_x="$PERSISTENT/Root/TextSize/Small"/>
+										<style align="right" format="0.00x" name="Label573" text_x="$ratios/DB/RowSet/Row[@duration = (if ( $PERSISTENT/Root/View = &quot;Quarterly&quot; ) then 3 else 12)][2]/@dividendCoverage" textColor="black" textSize_x="$PERSISTENT/Root/TextSize/Small"/>
 									</DesignLabel>
 									<DesignLabel id="5762">
-										<style align="right" format="0.00%" name="Label574" text_x="$ratios/DB/RowSet/Row[@duration = (if ( $PERSISTENT/Root/View = &quot;Quarterly&quot; ) then 3 else 12)][3]/@dividendCoverage" textColor="black" textSize_x="$PERSISTENT/Root/TextSize/Small"/>
+										<style align="right" format="0.00x" name="Label574" text_x="$ratios/DB/RowSet/Row[@duration = (if ( $PERSISTENT/Root/View = &quot;Quarterly&quot; ) then 3 else 12)][3]/@dividendCoverage" textColor="black" textSize_x="$PERSISTENT/Root/TextSize/Small"/>
 									</DesignLabel>
 									<DesignLabel id="5764">
-										<style align="right" format="0.00%" name="Label575" text_x="$ratios/DB/RowSet/Row[@duration = (if ( $PERSISTENT/Root/View = &quot;Quarterly&quot; ) then 3 else 12)][4]/@dividendCoverage" textColor="black" textSize_x="$PERSISTENT/Root/TextSize/Small"/>
+										<style align="right" format="0.00x" name="Label575" text_x="$ratios/DB/RowSet/Row[@duration = (if ( $PERSISTENT/Root/View = &quot;Quarterly&quot; ) then 3 else 12)][4]/@dividendCoverage" textColor="black" textSize_x="$PERSISTENT/Root/TextSize/Small"/>
 									</DesignLabel>
 								</children>
 							</DesignTableRow>
@@ -3697,7 +3697,8 @@ ORDER BY endDate DESC" table="ratios">
 					<dbSelectionDescription>
 						<statements>
 							<statement name="SelectCIKbyName" statementUI="SELECT cikNumber, companyName FROM filings WHERE companyName LIKE :name
-GROUP BY cikNumber, companyName" table="filings">
+GROUP BY cikNumber, companyName
+ORDER BY UPPER(companyName)" table="filings">
 								<colDescriptions>
 									<col name="cikNumber" dataType="mt_bigint"/>
 									<col name="companyName" dataType="mt_string"/>
