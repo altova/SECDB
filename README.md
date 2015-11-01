@@ -4,9 +4,9 @@ Creating a SQLlite financial reporting database from XBRL filings in the SEC EDG
 Introduction
 ------------
 
-Altova [RaptorXML](http://www.altova.com/raptorxml.html) is the third-generation, hyper-fast XML and XBRL processor from the makers of XMLSpy®. RaptorXML is built from the ground up to be optimized for the latest standards and parallel computing environments. Designed to be highly cross-platform capable, the engine takes advantage of today’s ubiquitous multi-CPU computers to deliver lightning fast processing of XML and XBRL data.
+The following project will demonstrate how to write Python scripts using [RaptorXML](http://www.altova.com/raptorxml.html)'s XBRL engine to process and analyze XBRL filings made available on the [SEC EDGAR](http://www.sec.gov/edgar.shtml) website. The data will be normalized according to a set of rules to map it to a standardized finanzial report format and will be stored in the database in normalized form. In addition we will compute common financial ratios for both the most-recent-quarter and trailing-twelve-months time horizons and also store them in the database.
 
-The following project will demonstrate how to write Python scripts using RaptorXML's XBRL engine to process and analyse XBRL filings made available on the [SEC EDGAR](http://www.sec.gov/edgar.shtml) website.
+We will also provide a mobile application for Smartphones and Tablets that allow the user to browse the database, select companies, and display the financial reports, graphs of key metrics, and the financial ratios being computed. The mobile application will be implemented using Altova [MobileTogether](http://www.altova.com/mobiletogether.html).
 
 Directory structure
 -------------------
@@ -106,3 +106,14 @@ In order to keep the SEC DB up-to-date one needs to refresh the EDGAR RSS feed, 
 	RaptorXMLXBRL.exe script scripts\daily_update.py --db=db\edgar.db3 --log=logs\daily_update_id{instance-id()}.log
 
 Make sure to also specify the root directory of the SEC DB project as the working directory. Finally, in the `Triggers` section create a new timer and choose the appropriate interval.
+
+Mobile app for browsing the database and financial analysis
+-----------------------------------------------------------
+
+The SECdb.mtd file in this project is a MobileTogether Design file that describes the mobile application that we've built to allow the user to browse the database and display the financial reports on a smartphone or tablet. 
+
+The .mtd file can be edited with Altova MobileTogether Designer, which is a free development tool for building mobile cross-platform apps. You can [download MobileTogether designer, server, and the client app from here](http://www.altova.com/download/mobiletogether.html). 
+
+We also operate the the scripts and database described here on a demo server that can be reached from the Internet. You can download the MobileTogether client app from the respective AppStore on your mobile device, then add a new server with the address secdb.altova.com and port 80. That will allow you to use the app on your device right away.
+
+To build and deploy your own app, install MobileTogether server on the same machine that hosts your version of the database, then modify the .mtd mobile design file according to your needs and deploy it to your own MobileTogether server.
