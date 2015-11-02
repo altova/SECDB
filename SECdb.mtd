@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <MobileTogetherDesign versionClient="49" versionServer="49" deploymentPath_so="/public/SECdb" deploymentDescription_so="High-level financial reports automatically extracted from the XBRL filings in the SEC&apos;s EDGAR database" deploymentGlobalResourceConfig_so="Default">
 	<DesignRoot id="1">
-		<style askCancelWorkflow="0" workflowIcon="C:\proj\SECdb\SECdbIcon.png"/>
+		<style askCancelWorkflow="0" timeoutClient="60" timeoutDataRetrieval="60" workflowIcon="C:\proj\SECdb\SECdbIcon.png"/>
 		<children>
 			<DesignPage id="2" name="FilingsByCompany">
 				<style autoAddSubmitButton="0" backgroundColor="white"/>
@@ -152,6 +152,19 @@
 									</DesignButton>
 								</children>
 							</DesignTableRow>
+							<DesignTableRow id="6421">
+								<children>
+									<DesignTableCellEmpty id="6422"/>
+									<DesignHLine id="6423">
+										<style name="Horizontal Line15"/>
+									</DesignHLine>
+									<DesignTableCellEmpty id="6425"/>
+									<DesignHLine id="6426">
+										<style name="Horizontal Line17"/>
+									</DesignHLine>
+									<DesignTableCellEmpty id="6428"/>
+								</children>
+							</DesignTableRow>
 						</children>
 					</DesignTable>
 					<DesignLabel id="400">
@@ -166,7 +179,7 @@
 								<children>
 									<DesignTableRow id="360">
 										<children>
-											<DesignLabel id="361" pageXML="384">
+											<DesignLabel id="361" pageXML="6430">
 												<style name="Label4" textColor="black"/>
 												<controlActions id="373">
 													<children>
@@ -3685,7 +3698,7 @@ ORDER BY endDate DESC" table="ratios">
 									<PageXMLElement id="382" name="Row" from="db">
 										<children>
 											<PageXMLAttribute id="383" name="cikNumber" from="db"/>
-											<PageXMLAttribute id="384" name="companyName" from="db"/>
+											<PageXMLAttribute id="6430" name="companyName" from="db"/>
 										</children>
 									</PageXMLElement>
 								</children>
@@ -3696,12 +3709,12 @@ ORDER BY endDate DESC" table="ratios">
 				<dbSelection so="1" id="386" dbSource_so="70">
 					<dbSelectionDescription>
 						<statements>
-							<statement name="SelectCIKbyName" statementUI="SELECT cikNumber, companyName FROM filings WHERE companyName LIKE :name
-GROUP BY cikNumber, companyName
+							<statement name="SelectCIKbyName" statementUI="SELECT cikNumber, UPPER(companyName) AS companyName FROM filings WHERE companyName LIKE :name
+GROUP BY cikNumber, UPPER(companyName)
 ORDER BY UPPER(companyName)" table="filings">
 								<colDescriptions>
 									<col name="cikNumber" dataType="mt_bigint"/>
-									<col name="companyName" dataType="mt_string"/>
+									<col name="companyName" fixed="1" dataType="mt_string"/>
 								</colDescriptions>
 								<parameters>
 									<par name="name" dataType="mt_string" length="255" xpath="$PERSISTENT/Root/Name" detect="0"/>
