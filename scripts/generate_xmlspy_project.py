@@ -48,7 +48,8 @@ def generate_project(feedpath):
 	<Folder FolderName="Filings by name" ExtStr="xml">
 """)
 		for filing in filings:
-			f.write("""\
+			if filing['instanceUrl']:
+				f.write("""\
 		<File FilePath="%s" HomeFolder="Yes"/>
 """%filing['instanceUrl'][len('filings/YYYY-MM/'):].replace('%7Czip/','|zip\\'))
 		f.write("""\
@@ -63,7 +64,8 @@ def generate_project(feedpath):
 		<Folder FolderName="%s" ExtStr="xml">
 """%company.replace('&','&amp;').replace('<','&lt;'))
 			for filing in filings_by_company[company]:
-				f.write("""\
+				if filing['instanceUrl']:
+					f.write("""\
 			<File FilePath="%s" HomeFolder="Yes"/>
 """%filing['instanceUrl'][len('filings/YYYY-MM/'):].replace('%7Czip/','|zip\\'))
 			f.write("""\

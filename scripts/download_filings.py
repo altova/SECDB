@@ -42,7 +42,7 @@ def filings_dir(feedpath):
 	subdir = re.fullmatch(r'.*xbrlrss-(\d{4}-\d{2})\.xml',os.path.basename(feedpath)).group(1)
 	return os.path.join(feed_tools.filings_dir,subdir)
 	
-def download_filings(feedpath,args):
+def download_filings(feedpath,args=None):
 	"""Go through all entries in the given EDGAR RSS feed and download any missing or new filings."""
 	logger.info("Processing RSS feed %s",feedpath)
 
@@ -51,14 +51,15 @@ def download_filings(feedpath,args):
 
 	filing_urls = []
 	for filing in feed_tools.read_feed(feedpath):
-		if args.company_re and not bool(args.company_re.match(filing['companyName'])):
-			continue
-		if args.cik and args.cik != filing['cikNumber']:
-			continue
-		if args.sic and args.sic != filing['assignedSic']:
-			continue
-		if args.form_type and args.form_type != filing['formType']:
-			continue
+		if args:
+			if args.company_re and not bool(args.company_re.match(filing['companyName'])):
+				continue
+			if args.cik and args.cik != filing['cikNumber']:
+				continue
+			if args.sic and args.sic != filing['assignedSic']:
+				continue
+			if args.form_type and args.form_type != filing['formType']:
+				continue
 		if 'enclosureUrl' in filing and not exists_filing(dir,filing['enclosureUrl'],filing['enclosureLength']):
 			filing_urls.append(filing['enclosureUrl'])
 	

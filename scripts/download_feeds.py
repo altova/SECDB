@@ -38,6 +38,8 @@ def download_feeds(args=None):
 	"""Returns a list absolute file paths to any new or missing EDGAR RSS feeds that were downloaded."""
 	feeds = []
 
+	start_from = args.start_from if args else '2005-04'
+	
 	if args and args.month:
 	
 		feed = feed_tools.Feed(*(int(i) for i in args.month.split('-')))
@@ -49,7 +51,7 @@ def download_feeds(args=None):
 		current_feed = feed_tools.Feed(today.year,today.month)
 
 		# Download any missing or new RSS feeds from 2005 until now
-		feed_start = feed_tools.Feed(*(int(i) for i in args.start_from.split('-')))
+		feed_start = feed_tools.Feed(*(int(i) for i in start_from.split('-')))
 		feed = feed_start
 		while feed <= current_feed:
 			if not os.path.exists(os.path.join(feed_dir,feed.filename)):
