@@ -662,6 +662,16 @@ def calculation_network(dts,linkrole):
 		filing_logger.warning('No calculation linkbase found for linkrole %s',linkrole)
 		return None
 
+def end_date(context):
+	"""Returns the end date specified as in the context as used in financial statements (e.g. ending Dec. 31, 2015 instead of Jan. 1)."""
+	period = context.period_aspect_value
+	if period.period_type == xbrl.PeriodType.INSTANT:
+		return period.instant.date() - datetime.timedelta(days=1)
+	elif period.period_type == xbrl.PeriodType.START_END:
+		return period.end.date() - datetime.timedelta(days=1)
+	else:
+		return datetime.date.max
+		
 def calc_balance_sheet(filing,instance,context,linkroles):
 	"""Calculate balance sheet line items from XBRL instance and store in DB."""
 	filing_logger.info('Calculate %s',reports['balance']['name'])
@@ -678,7 +688,7 @@ def calc_balance_sheet(filing,instance,context,linkroles):
 
 	fact_values = find_presentation_linkbase_values(filing,reports['balance'],instance,linkrole,context,'USD')
 	values = calc_report_values(filing,reports['balance'],instance,linkrole,fact_values)
-	values.update({'accessionNumber': filing['accessionNumber'], 'cikNumber': filing['cikNumber'], 'endDate': context.period_aspect_value.instant.date(), 'currencyCode': 'USD'})
+	values.update({'accessionNumber': filing['accessionNumber'], 'cikNumber': filing['cikNumber'], 'endDate': end_date(context), 'currencyCode': 'USD'})
 
 	# Insert balance sheet into DB
 	with db_connect() as con:
@@ -709,7 +719,7 @@ def calc_income_statement(filing,instance,context,linkroles):
 
 	fact_values = find_presentation_linkbase_values(filing,reports['income'],instance,linkrole,context,'USD')
 	values = calc_report_values(filing,reports['income'],instance,linkrole,fact_values)
-	values.update({'accessionNumber': filing['accessionNumber'], 'cikNumber': filing['cikNumber'], 'duration': duration, 'endDate': context.period_aspect_value.end.date(), 'currencyCode': 'USD'})
+	values.update({'accessionNumber': filing['accessionNumber'], 'cikNumber': filing['cikNumber'], 'duration': duration, 'endDate': end_date(context), 'currencyCode': 'USD'})
 
 	for lineitem in ('costOfRevenue','researchAndDevelopment','sellingGeneralAndAdministrative','nonRecurring','operatingExpensesOther','operatingExpensesTotal','interestExpense','incomeTaxExpense','minorityInterest','preferredStockAndOtherAdjustments'):
 		if values[lineitem]:
@@ -756,7 +766,7 @@ def calc_cashflow_statement(filing,instance,context,linkroles):
 
 	fact_values = find_presentation_linkbase_values(filing,reports['cashflow'],instance,linkrole,context,'USD')
 	values = calc_report_values(filing,reports['cashflow'],instance,linkrole,fact_values)
-	values.update({'accessionNumber': filing['accessionNumber'], 'cikNumber': filing['cikNumber'], 'duration': duration, 'endDate': context.period_aspect_value.end.date(), 'currencyCode': 'USD'})
+	values.update({'accessionNumber': filing['accessionNumber'], 'cikNumber': filing['cikNumber'], 'duration': duration, 'endDate': end_date(context), 'currencyCode': 'USD'})
 
 	# Insert cash flow statement into DB
 	with db_connect() as con:
