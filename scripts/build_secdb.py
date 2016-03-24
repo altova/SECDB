@@ -918,7 +918,7 @@ def process_filing(filing):
 			if not args.recompute:
 				filing_logger.info('Skipped already processed filing')
 				return
-			filing_logger.info('Deleting existing filing %s',row[0])
+			filing_logger.info('Deleting existing filing %s',filing['accessionNumber'])
 			con.execute('DELETE FROM filings WHERE accessionNumber = ?',(filing['accessionNumber'],))
 			con.execute('DELETE FROM facts WHERE accessionNumber = ?',(filing['accessionNumber'],))
 			con.execute('DELETE FROM balance_sheet WHERE accessionNumber = ?',(filing['accessionNumber'],))
