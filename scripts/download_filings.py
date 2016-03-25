@@ -27,15 +27,21 @@ def exists_filing(dir, url, length):
 	filepath = os.path.join(dir,url.split('/')[-1])
 	return os.path.exists(filepath) and os.path.getsize(filepath) == length
 
-def download_filing(dir, url):
+def download_filing(dir, url, max_retries=3):
 	"""Download filing at url and store within the given dir."""
-	logger.info('Downloading filing %s',url)
 
-	try:
-		filepath = os.path.join(dir,url.split('/')[-1])
-		urllib.request.urlretrieve(url,filepath)
-	except urllib.error.HTTPError as e:
-		logger.exception('Failed downloading filing %s',url)
+	filepath = os.path.join(dir,url.split('/')[-1])
+	while max_retries > 0:
+		try:
+			logger.info('Downloading filing %s',url)
+			urllib.request.urlretrieve(url,filepath)
+		except OSError:
+			logger.exception('Failed downloading filing %s',url)
+			max_retries -= 1
+			time.sleep(3)
+		else:
+			logger.info('Succeeded downloading filing %s',url)
+			return
 
 def filings_dir(feedpath):
 	"""Returns the absolute directory path where filings for this feed will be stored."""
@@ -65,7 +71,7 @@ def download_filings(feedpath,args=None):
 	
 	logger.info("Start downloading %d new filings",len(filing_urls))
 	for url in filing_urls:
-		download_filing(dir,url)
+		download_filing(dir,url,args.max_retries)
 
 def collect_feeds(args):
 	"""Returns an generator of the resolved, absolute RSS file paths."""
@@ -82,6 +88,7 @@ def parse_args():
 	parser.add_argument('--sic', help='SIC number')
 	parser.add_argument('--form-type', help='Form type (10-K,10-Q,...)')
 	parser.add_argument('--company', help='Company name')
+	parser.add_argument('--retries', type=int, default=3, dest='max_retries', help='specify max number of retries to download a specific filing')
 	args = parser.parse_args()
 	args.company_re = re.compile(args.company, re.I) if args.company else None
 	if args.cik:
