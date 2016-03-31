@@ -1023,18 +1023,21 @@ def setup_logging(log_file):
 	logger = logging.getLogger('default')
 	filing_logger = FilingLogAdapter(logger,{})
 
-def parse_args():
+def parse_args(daily_update=False):
 	"""Returns the arguments and options passed to the script."""
 	parser = argparse.ArgumentParser(description='Process XBRL filings and extract financial data and ratios into a DB.')
-	parser.add_argument('rss_feeds', metavar='RSS', nargs='*', help='EDGAR RSS feed file')
+	if not daily_update:
+		parser.add_argument('rss_feeds', metavar='RSS', nargs='*', help='EDGAR RSS feed file')
+		parser.add_argument('--create-tables', default=False, action='store_true', help='specify very first time to create empty DB tables')
 	parser.add_argument('--db', metavar='DSN', default='sec.db3', dest='db_name', help='specify the target DB datasource name or file')
 	parser.add_argument('--db-driver', default='sqlite', choices=['sqlite','odbc'], help='specify the DB driver to use')
-	parser.add_argument('--create-tables', default=False, action='store_true', help='specify very first time to create empty DB tables')
 	parser.add_argument('--log', metavar='LOGFILE', dest='log_file', help='specify output log file')
 	parser.add_argument('--threads', metavar='MAXTHREADS', type=int, default=8, dest='max_threads', help='specify max number of threads')
 	parser.add_argument('--cik', metavar='CIK', type=int, help='limit processing to only the specified CIK number')
 	parser.add_argument('--recompute', default=False, action='store_true', help='recompute and replace filings already present in DB')
 	parser.add_argument('--store-fact-mappings', default=False, action='store_true', help='stores original XBRL fact values and mappings to line items in DB')
+	if daily_update:
+		parser.add_argument('--retries', type=int, default=3, dest='max_retries', help='specify max number of retries to download a specific filing')
 	return parser.parse_args()
 
 def build_secdb(feeds):

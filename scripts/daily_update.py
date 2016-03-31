@@ -18,13 +18,16 @@ import time, download_feeds, download_filings, build_secdb
 	
 def main():
 	# Parse script arguments
-	build_secdb.args = build_secdb.parse_args()
+	build_secdb.args = build_secdb.parse_args(daily_update=True)
+	build_secdb.args.company_re = None
+	build_secdb.args.sic = None
+	build_secdb.args.form_type = None
 	# Setup python logging framework
 	build_secdb.setup_logging(build_secdb.args.log_file)
 	
 	feeds = download_feeds.download_feeds()
 	for feed in feeds:
-		download_filings.download_filings(feed)
+		download_filings.download_filings(feed,build_secdb.args)
 		build_secdb.build_secdb(feeds)
 
 if __name__ == '__main__':
