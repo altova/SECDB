@@ -118,7 +118,7 @@ def load_feed(filepath):
 	if not feed_instance:
 		error = 'Failed loading RSS feed %s: %s' % (url,'\n'.join([error.text for error in log]))
 		logger.error(error)
-		raise Error(error)
+		raise RuntimeError(error)
 	return feed_instance
 
 def child_elem_as_str(elem,name):

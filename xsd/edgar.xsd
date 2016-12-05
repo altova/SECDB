@@ -12,6 +12,7 @@
 			<xs:attribute name="size" use="required" type="xs:int"/>
 			<xs:attribute name="description" use="required" type="xs:string"/>
 			<xs:attribute name="url" use="required" type="xs:anyURI"/>
+			<xs:attribute name="inlineXBRL" type="xs:boolean"/>
 		</xs:complexType>
 	</xs:element>
 	<xs:element name="cikNumber" type="xs:int"/>
