@@ -20,12 +20,12 @@ __license__ = 'http://www.apache.org/licenses/LICENSE-2.0'
 # 	raptorxmlxbrl script scripts/download_filings.py feeds/xbrlrss-2015-05.xml
 
 import feed_tools
-import sys,re,time,os.path,urllib.request,urllib.error,glob,logging,argparse
+import sys,re,time,os.path,urllib.request,urllib.error,glob,logging,argparse,concurrent.futures
 
 def exists_filing(dir, url, length):
 	"""Returns True if the filing already has been downloaded."""
 	filepath = os.path.join(dir,url.split('/')[-1])
-	return os.path.exists(filepath) and os.path.getsize(filepath) == length
+	return os.path.exists(filepath) and (length is None or os.path.getsize(filepath) == length)
 
 def download_filing(dir, url, max_retries=3):
 	"""Download filing at url and store within the given dir."""
@@ -70,8 +70,13 @@ def download_filings(feedpath,args=None):
 			filing_urls.append(filing['enclosureUrl'])
 	
 	logger.info("Start downloading %d new filings",len(filing_urls))
-	for url in filing_urls:
-		download_filing(dir,url,args.max_retries)
+	with concurrent.futures.ThreadPoolExecutor(max_workers=args.max_threads) as executor:
+		futures = [executor.submit(download_filing,dir,url,args.max_retries) for url in filing_urls]
+		for future in concurrent.futures.as_completed(futures):
+			try:
+				future.result()
+			except Exception as e:
+				print(e)
 
 def collect_feeds(args):
 	"""Returns an generator of the resolved, absolute RSS file paths."""
@@ -88,6 +93,7 @@ def parse_args():
 	parser.add_argument('--sic', help='SIC number')
 	parser.add_argument('--form-type', help='Form type (10-K,10-Q,...)')
 	parser.add_argument('--company', help='Company name')
+	parser.add_argument('--threads', type=int, default=8, dest='max_threads', help='specify max number of threads')
 	parser.add_argument('--retries', type=int, default=3, dest='max_retries', help='specify max number of retries to download a specific filing')
 	args = parser.parse_args()
 	args.company_re = re.compile(args.company, re.I) if args.company else None
