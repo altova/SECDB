@@ -83,12 +83,14 @@ def validate(url):
 	if not instance or log.has_errors():		
 		errors = list(log.errors)
 		logger.error('Filing %s has %d ERRORS!',url,len(errors))
-		logger.log(logging.DEBUG,'\n'.join([error.text for error in log]))
+		if logging.getLogger().isEnabledFor(logging.DEBUG):
+			logger.log(logging.DEBUG,'\n'.join([error.text for error in log]))
 		return False
 	if log.has_inconsistencies():
 		inconsistencies = list(log.inconsistencies)
 		logger.warning('Filing %s has %d INCONSISTENCIES!',url,len(inconsistencies))
-		logger.log(logging.DEBUG,'\n'.join([error.text for error in inconsistencies]))
+		if logging.getLogger().isEnabledFor(logging.DEBUG):
+			logger.log(logging.DEBUG,'\n'.join([error.text for error in inconsistencies]))
 	else:
 		logger.info('Filing %s is VALID!',url)
 	return True
