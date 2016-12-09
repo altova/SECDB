@@ -736,11 +736,12 @@ def calc_income_statement(filing,instance,context,linkroles):
 			previous_year_date = datetime.date(filing['period'].year-1,filing['period'].month,calendar.monthrange(filing['period'].year-1,filing['period'].month)[1])
 			previous_quarters = con.execute('SELECT * FROM income_statement WHERE duration = 3 AND accessionNumber IN (SELECT accessionNumber FROM filings WHERE cikNumber = ? AND formType = "10-Q" AND period BETWEEN ? AND ?)',(filing['cikNumber'],previous_year_date,filing['period'])).fetchall()
 
+			previous_quarters = {previous_quarter[2]: previous_quarter for previous_quarter in previous_quarters}	# ignore duplicate filings
 			if len(previous_quarters) == 3:
 				field_offset = len(db_fields)-len(reports['income']['lineitems'])
 				for i, lineitem in enumerate(reports['income']['lineitems']):
 					if values[lineitem] is not None:
-						for previous_quarter in previous_quarters:
+						for previous_quarter in previous_quarters.values():
 							if previous_quarter[i+field_offset]:
 								values[lineitem] -= previous_quarter[i+field_offset]
 
@@ -1062,6 +1063,9 @@ def build_secdb(feeds):
 		# Load EDGAR filing metadata from RSS feed (and filter out all non 10-K/10-Q filings or companies without an assigned ticker symbol)
 		filings = {}
 		for filing in feed_tools.read_feed(filepath):
+			# Google to Alphabet reorganization
+			if filing['cikNumber'] == 1288776:
+				filing['cikNumber'] = 1652044
 			if args.cik is None or args.cik == filing['cikNumber']:
 				if filing['formType'] in ('10-K','10-K/A','10-Q','10-Q/A') and filing['cikNumber'] in tickers:
 					filing['ticker'] = tickers[filing['cikNumber']]
