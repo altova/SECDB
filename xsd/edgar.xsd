@@ -9,12 +9,24 @@
 			<xs:attribute name="sequence" use="required" type="xs:short"/>
 			<xs:attribute name="file" use="required" type="xs:string"/>
 			<xs:attribute name="type" use="required" type="xs:string"/>
-			<xs:attribute name="size" use="required" type="xs:int"/>
+			<xs:attribute name="size" use="required" type="edgar:empty_int"/>
 			<xs:attribute name="description" use="required" type="xs:string"/>
 			<xs:attribute name="url" use="required" type="xs:anyURI"/>
 			<xs:attribute name="inlineXBRL" type="xs:boolean"/>
 		</xs:complexType>
 	</xs:element>
+	<xs:simpleType name="empty_int">
+		<xs:union>
+			<xs:simpleType>
+				<xs:restriction base="xs:string">
+					<xs:enumeration value="" />
+				</xs:restriction>
+			</xs:simpleType>
+			<xs:simpleType>
+				<xs:restriction base="xs:int" />
+			</xs:simpleType>
+		</xs:union>
+	</xs:simpleType>
 	<xs:element name="cikNumber" type="xs:int"/>
 	<xs:element name="xbrlFiles">
 		<xs:complexType>
