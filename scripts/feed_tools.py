@@ -164,7 +164,14 @@ def parse_feed(feed_instance):
 				if enclosure:
 					filing['enclosureUrl'] = enclosure.find_attribute('url').schema_normalized_value
 					filing['enclosureLength'] = int(enclosure.find_attribute('length').schema_normalized_value)
-			
+				else:
+					# fallback to value of <link> s/index.htm/xbrl.zip/
+					link = item.find_child_element('link')
+					if link:
+						composed_enclosure = link.schema_normalized_value.replace('index.htm', 'xbrl.zip')
+						filing['enclosureUrl'] = composed_enclosure
+						filing['enclosureLength'] = None
+
 				xbrlFiling = item.find_child_element(('xbrlFiling',edgar_ns))
 				if xbrlFiling:
 					filing['companyName'] = child_elem_as_str(xbrlFiling,'companyName')
