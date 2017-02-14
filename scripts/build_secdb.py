@@ -30,7 +30,7 @@ class Summations(dict):
 		return 0
 
 gsRootDir = os.sep.join(os.path.abspath(__file__).split(os.sep)[:-2])
-gsRootURL = 'file:'+urllib.request.pathname2url(gsRootDir)+'/'
+gsRootURL = 'file://'+urllib.request.pathname2url(gsRootDir)+'/'
 
 reports = json.load(open(os.path.join(gsRootDir,'data','reports.json')))
 reports['balance'].update({'kind': 'balance', 'name': 'Balance Sheet', 'mappings': json.load(open(os.path.join(gsRootDir,'data','balance_mappings.json')))})

@@ -99,7 +99,7 @@ def load_rss_schema():
 	filepath = os.path.join(root_dir,'xsd','rss.xsd')
 	logger.info('Loading RSS schema %s',filepath)
 
-	url = 'file:'+urllib.request.pathname2url(filepath)
+	url = 'file://'+urllib.request.pathname2url(filepath)
 	rss_schema, log = xsd.Schema.create_from_url(url)
 	if not rss_schema:
 		error = 'Failed loading RSS schema: %s' % '\n'.join([error.text for error in log])
@@ -113,7 +113,7 @@ def load_feed(filepath):
 	
 	logger.info('Loading RSS feed %s',filepath)
 
-	url = 'file:'+urllib.request.pathname2url(filepath)
+	url = 'file://'+urllib.request.pathname2url(filepath)
 	feed_instance, log = xml.Instance.create_from_url(url,schema=rss_schema)
 	if not feed_instance:
 		error = 'Failed loading RSS feed %s: %s' % (url,'\n'.join([error.text for error in log]))

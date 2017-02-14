@@ -24,7 +24,7 @@ import altova_api.v2.xsd as xsd
 import re, sys, os, json, time, datetime, argparse, concurrent.futures, urllib, glob
 
 gsRootDir = os.sep.join(os.path.abspath(__file__).split(os.sep)[:-2])
-gsRootURL = 'file:'+urllib.request.pathname2url(gsRootDir)+'/'
+gsRootURL = 'file://'+urllib.request.pathname2url(gsRootDir)+'/'
 
 def load_rss_schema():
 	filepath = urllib.parse.urljoin(gsRootURL,'xsd/rss.xsd')
