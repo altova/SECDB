@@ -1039,6 +1039,7 @@ def parse_args(daily_update=False):
 	parser.add_argument('--store-fact-mappings', default=False, action='store_true', help='stores original XBRL fact values and mappings to line items in DB')
 	if daily_update:
 		parser.add_argument('--retries', type=int, default=3, dest='max_retries', help='specify max number of retries to download a specific filing')
+		parser.add_argument('--update-tickers', default=False, action='store_true', help='updates Ticker/CIK in --db')
 	return parser.parse_args()
 
 def build_secdb(feeds):
@@ -1052,10 +1053,11 @@ def build_secdb(feeds):
 	db_connect = setup_db_connect(args.db_driver,args.db_name)
 
 	# Create all required DB tables
-	if args.create_tables:
-		create_db_tables()
-		create_db_indices()
-		insert_ticker_symbols(tickers)
+	if 'create_tables' in args:
+		if args.create_tables:
+			create_db_tables()
+			create_db_indices()
+			insert_ticker_symbols(tickers)
 
 	# Process all filings in the given RSS feeds one month after another
 	for filepath in feeds:

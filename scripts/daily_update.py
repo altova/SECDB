@@ -15,7 +15,9 @@ __copyright__ = 'Copyright 2015 Altova GmbH'
 __license__ = 'http://www.apache.org/licenses/LICENSE-2.0'
 
 import time, download_feeds, download_filings, build_secdb
-	
+import tickers_cik
+import sys
+
 def main():
 	# Parse script arguments
 	build_secdb.args = build_secdb.parse_args(daily_update=True)
@@ -25,6 +27,11 @@ def main():
 	# Setup python logging framework
 	build_secdb.setup_logging(build_secdb.args.log_file)
 	
+	if build_secdb.args.update_tickers:
+		argp = tickers_cik.mk_arg_parser()
+		opts = argp.parse_args(["update", "--now=logs/tickers","--db=%s" %build_secdb.args.db_name, "--tickers-from-db"])
+		tickers_cik.update_cmd(opts)
+
 	feeds = download_feeds.download_feeds()
 	for feed in feeds:
 		download_filings.download_filings(feed,build_secdb.args)
