@@ -1,11 +1,11 @@
 # Copyright 2015 Altova GmbH
-# 
+#
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
-# 
+#
 #	  http://www.apache.org/licenses/LICENSE-2.0
-# 
+#
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -36,18 +36,19 @@ def download_filing(dir, url, max_retries=3):
 			logger.info('Downloading filing %s',url)
 			urllib.request.urlretrieve(url,filepath)
 		except OSError:
-			logger.exception('Failed downloading filing %s',url)
+			logger.info('Retry downloading filing %s',url)
 			max_retries -= 1
 			time.sleep(3)
 		else:
 			logger.info('Succeeded downloading filing %s',url)
 			return
+	logger.exception('Failed downloading filing %s',url)
 
 def filings_dir(feedpath):
 	"""Returns the absolute directory path where filings for this feed will be stored."""
 	subdir = re.fullmatch(r'.*xbrlrss-(\d{4}-\d{2})\.xml',os.path.basename(feedpath)).group(1)
 	return os.path.join(feed_tools.filings_dir,subdir)
-	
+
 def download_filings(feedpath,args=None):
 	"""Go through all entries in the given EDGAR RSS feed and download any missing or new filings."""
 	logger.info("Processing RSS feed %s",feedpath)
@@ -68,7 +69,7 @@ def download_filings(feedpath,args=None):
 				continue
 		if 'enclosureUrl' in filing and not exists_filing(dir,filing['enclosureUrl'],filing['enclosureLength']):
 			filing_urls.append(filing['enclosureUrl'])
-	
+
 	logger.info("Start downloading %d new filings",len(filing_urls))
 	with concurrent.futures.ThreadPoolExecutor(max_workers=args.max_threads) as executor:
 		futures = [executor.submit(download_filing,dir,url,args.max_retries) for url in filing_urls]
@@ -111,16 +112,16 @@ def setup_logging(log_file):
 	else:
 		logging.basicConfig(format='%(asctime)s %(levelname)s %(message)s',level=logging.INFO)
 	logger = logging.getLogger('default')
-	
+
 def main():
 	# Parse script arguments
-	args = parse_args()	
+	args = parse_args()
 	# Setup python logging framework
 	setup_logging(args.log_file)
-	
+
 	for feedpath in collect_feeds(args.rss_feeds):
 		download_filings(feedpath,args)
-		
+
 if __name__ == '__main__':
 	start = time.clock()
 	main()
@@ -129,3 +130,4 @@ if __name__ == '__main__':
 else:
 	# create logger
 	logger = logging.getLogger('default')
+	
