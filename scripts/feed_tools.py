@@ -1,11 +1,11 @@
 # Copyright 2015 Altova GmbH
-# 
+#
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
-# 
+#
 #	  http://www.apache.org/licenses/LICENSE-2.0
-# 
+#
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -58,13 +58,13 @@ class Feed:
 		if self._month > 12:
 			self._month = 1
 			self._year += 1
-		
+
 	def dec(self):
 		self._month -= 1
 		if self._month < 1:
 			self._month = 12
 			self._year -= 1
-		
+
 	@property
 	def year(self):
 		return self._year
@@ -72,12 +72,12 @@ class Feed:
 	@property
 	def month(self):
 		return self._month
-		
+
 	@property
 	def filename(self):
 		"""Returns the filename of the EDGAR RSS feed."""
 		return 'xbrlrss-%d-%02d.xml'%(self.year,self.month)
-		
+
 	@property
 	def url(self):
 		"""Returns the URL representing the EDGAR RSS feed."""
@@ -89,7 +89,7 @@ class Feed:
 		filepath = os.path.join(dir,self.filename)
 		urllib.request.urlretrieve(self.url,filepath)
 		return filepath
-		
+
 def load_rss_schema():
 	"""Returns an XML schema object of the RSS schema."""
 	global rss_schema
@@ -104,13 +104,13 @@ def load_rss_schema():
 	if not rss_schema:
 		error = 'Failed loading RSS schema: %s' % '\n'.join([error.text for error in log])
 		logger.critical(error)
-		raise RuntimeError(error)		
+		raise RuntimeError(error)
 	return rss_schema
-	
+
 def load_feed(filepath):
 	"""Returns an XML instance object of the RSS feed."""
-	rss_schema = load_rss_schema()	
-	
+	rss_schema = load_rss_schema()
+
 	logger.info('Loading RSS feed %s',filepath)
 
 	url = 'file://'+urllib.request.pathname2url(filepath)
@@ -141,14 +141,14 @@ def child_elem_as_date(elem,name,format):
 	if child:
 		return datetime.datetime.strptime(str(child.schema_actual_value),format).date()
 	return None
-	
+
 def child_elem_as_datetime(elem,name,format):
 	"""Returns the content of the child element as datetime."""
 	child = elem.find_child_element((name,edgar_ns))
 	if child:
 		return datetime.datetime.strptime(str(child.schema_actual_value),format)
 	return None
-	
+
 def parse_feed(feed_instance):
 	"""Parse the EDGAR meta information for each item/filing in the RSS feed and return a list of dict objects."""
 	dir = 'filings/'+re.fullmatch(r'file:///.*/xbrlrss-(\d{4}-\d{2})\.xml',feed_instance.uri).group(1)
@@ -159,7 +159,7 @@ def parse_feed(feed_instance):
 		for item in channel.element_children():
 			if item.local_name == 'item':
 				filing = {}
-			
+
 				enclosure = item.find_child_element('enclosure')
 				if enclosure:
 					filing['enclosureUrl'] = enclosure.find_attribute('url').schema_normalized_value
@@ -196,12 +196,12 @@ def parse_feed(feed_instance):
 					filing['instanceUrl'] = instanceUrl
 				filings.append(filing)
 	return filings
-	
+
 def read_feed(filepath):
 	"""Return a list of dict objects with EDGAR meta information for each filing in the RSS feed."""
 	feed = load_feed(filepath)
 	return parse_feed(feed)
-	
+
 def read_feeds(filepaths):
 	"""Return a list of dict objects with EDGAR meta information for each filing in the RSS feeds."""
 	filings = []
