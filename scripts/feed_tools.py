@@ -16,9 +16,12 @@ __license__ = 'http://www.apache.org/licenses/LICENSE-2.0'
 
 # This module provides commonly used functionality to work with EDGAR RSS feeds.
 
+import re
 import altova_api.v2.xml as xml
 import altova_api.v2.xsd as xsd
 import re,datetime,os.path,urllib.request,urllib.error,glob,logging
+
+ex_re = re.compile('EX-(\d\d[^\d]|100)')
 
 # create logger
 logger = logging.getLogger('default')
@@ -188,12 +191,17 @@ def parse_feed(feed_instance):
 					filing['fiscalYearEnd'] = child_elem_as_int(xbrlFiling,'fiscalYearEnd')
 					instanceUrl = None
 					xbrlFiles = xbrlFiling.find_child_element(('xbrlFiles',edgar_ns))
+					exhibits = []
 					for xbrlFile in xbrlFiles.element_children():
-						if xbrlFile.find_attribute(('type',edgar_ns)).normalized_value == 'EX-101.INS':
+						fileType = xbrlFile.find_attribute(('type',edgar_ns)).normalized_value
+						if fileType == 'EX-101.INS':
 							url = xbrlFile.find_attribute(('url',edgar_ns)).normalized_value
 							instanceUrl = dir+'/'+filing['accessionNumber']+'-xbrl.zip%7Czip/'+url.split('/')[-1]
-							break
+						elif ex_re.match( fileType ):
+							exhibits.append( xbrlFile.find_attribute(('url',edgar_ns)).normalized_value )
 					filing['instanceUrl'] = instanceUrl
+					if exhibits:
+						filing['exhibitList'] = exhibits
 				filings.append(filing)
 	return filings
 

@@ -69,6 +69,8 @@ def download_filings(feedpath,args=None):
 				continue
 		if 'enclosureUrl' in filing and not exists_filing(dir,filing['enclosureUrl'],filing['enclosureLength']):
 			filing_urls.append(filing['enclosureUrl'])
+		if args and args.with_exhibits:
+			filing_urls.extend( filing.get( 'exhibitList', [] ) )
 
 	logger.info("Start downloading %d new filings",len(filing_urls))
 	with concurrent.futures.ThreadPoolExecutor(max_workers=args.max_threads) as executor:
@@ -96,6 +98,7 @@ def parse_args():
 	parser.add_argument('--company', help='Company name')
 	parser.add_argument('--threads', type=int, default=8, dest='max_threads', help='specify max number of threads')
 	parser.add_argument('--retries', type=int, default=3, dest='max_retries', help='specify max number of retries to download a specific filing')
+	parser.add_argument('--with-exhibits', action='store_true', help='download exhibits also')
 	args = parser.parse_args()
 	args.company_re = re.compile(args.company, re.I) if args.company else None
 	if args.cik:
