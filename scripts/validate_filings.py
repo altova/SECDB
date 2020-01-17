@@ -4,7 +4,7 @@
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
 # 
-#	  http://www.apache.org/licenses/LICENSE-2.0
+#     http://www.apache.org/licenses/LICENSE-2.0
 # 
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
@@ -17,133 +17,106 @@ __license__ = 'http://www.apache.org/licenses/LICENSE-2.0'
 # Validates all SEC filings in the given RSS feed
 #
 # Usage:
-# 	raptorxmlxbrl script scripts/validate_filings.py feeds/xbrlrss-2015-04.xml
+#   raptorxmlxbrl script scripts/validate_filings.py feeds/xbrlrss-2015-04.xml
 
-import altova_api.v2.xml as xml
-import altova_api.v2.xsd as xsd
-import altova_api.v2.xbrl as xbrl
-import re,sys,os.path,time,concurrent.futures,urllib,glob,logging,argparse
+import feed_tools
+import tqdm
+import re,sys,os.path,time,concurrent.futures,urllib,glob,logging,argparse,multiprocessing,threading
+from altova_api.v2 import xml, xsd, xbrl
 
-gsRootDir = os.sep.join(os.path.abspath(__file__).split(os.sep)[:-2])
-gsRootURL = 'file://'+urllib.request.pathname2url(gsRootDir)+'/'
 
-def load_rss_schema():
-	rss_schema, log = xsd.Schema.create_from_url(urllib.parse.urljoin(gsRootURL,'xsd/rss.xsd'))
-	if not rss_schema:
-		raise Exception('\n'.join([error.text for error in log]))
-	return rss_schema
-	
-def load_rss_feed(url,schema):
-	rss_feed, log = xml.Instance.create_from_url(urllib.parse.urljoin(gsRootURL,url),schema=schema)
-	if not rss_feed:
-		raise Exception('\n'.join([error.text for error in log]))
-	return rss_feed
+def validate(filing):
+    instance, log = feed_tools.load_instance(filing)
+    
+    if not instance or log.has_errors():        
+        logger.error('Filing %s has %d ERRORS!',feed_tools.instance_url(filing),len(list(log.errors)))
+        if logging.getLogger().isEnabledFor(logging.DEBUG):
+            logger.log(logging.DEBUG,'\n'.join([error.text for error in log]))
+        return False
 
-def child_as_str(elem,name):
-	child = elem.find_child_element((name,'http://www.sec.gov/Archives/edgar'))
-	if child:
-		return str(child.schema_actual_value)
-	return None
+    if log.has_inconsistencies():
+        inconsistencies = list(log.inconsistencies)
+        logger.warning('Filing %s has %d INCONSISTENCIES!',feed_tools.instance_url(filing),len(inconsistencies))
+        if logging.getLogger().isEnabledFor(logging.DEBUG):
+            logger.log(logging.DEBUG,'\n'.join([error.text for error in inconsistencies]))
+    else:
+        logger.info('Filing %s is VALID!',feed_tools.instance_url(filing))
+    return True
 
-def child_as_int(elem,name):
-	child = elem.find_child_element((name,'http://www.sec.gov/Archives/edgar'))
-	if child:
-		return int(child.schema_actual_value)
-	return None
-	
-def parse_rss_feed(rss_feed,args):
-	dir = 'filings/'+re.fullmatch(r'file:///.*/xbrlrss-(\d{4}-\d{2})\.xml',rss_feed.uri).group(1)
+def validate_filings(filings, max_threads):
+    logger.info('Processing %d filings...',len(filings))
+    with concurrent.futures.ThreadPoolExecutor(max_workers=max_threads) as executor:
+        with tqdm.tqdm(range(len(filings))) as progressbar:
+            futures = [executor.submit(validate,filing) for filing in filings]
+            try:
+                for future in concurrent.futures.as_completed(futures):
+                    future.result()
+                    progressbar.update()
+            except KeyboardInterrupt:
+                executor._threads.clear()
+                concurrent.futures.thread._threads_queues.clear()
+                raise
 
-	filings = []
-	rss = rss_feed.document_element
-	for channel in rss.element_children():
-		for item in channel.element_children():
-			if item.local_name == 'item':
-				xbrlFiling = item.find_child_element(('xbrlFiling','http://www.sec.gov/Archives/edgar'))
-				if xbrlFiling:
-					if args.company_re and not bool(args.company_re.match(child_as_str(xbrlFiling,'companyName'))):
-						continue
-					if args.form_type and args.form_type != child_as_str(xbrlFiling,'formType'):
-						continue
-					if args.cik and args.cik != child_as_int(xbrlFiling,'cikNumber'):
-						continue
-					if args.sic and args.sic != child_as_int(xbrlFiling,'assignedSic'):
-						continue
-				
-					accessionNumber = xbrlFiling.find_child_element(('accessionNumber','http://www.sec.gov/Archives/edgar')).schema_normalized_value
-					xbrlFiles = xbrlFiling.find_child_element(('xbrlFiles','http://www.sec.gov/Archives/edgar'))
-					for xbrlFile in xbrlFiles.element_children():
-						if xbrlFile.find_attribute(('type','http://www.sec.gov/Archives/edgar')).schema_normalized_value == 'EX-101.INS':
-							url = xbrlFile.find_attribute(('url','http://www.sec.gov/Archives/edgar')).schema_normalized_value
-							filings.append(dir+'/'+accessionNumber+'-xbrl.zip%7Czip/'+url.split('/')[-1])
-	return filings
-
-def validate(url):
-	instance, log = xbrl.Instance.create_from_url(urllib.parse.urljoin(gsRootURL,url))
-	if not instance or log.has_errors():		
-		errors = list(log.errors)
-		logger.error('Filing %s has %d ERRORS!',url,len(errors))
-		if logging.getLogger().isEnabledFor(logging.DEBUG):
-			logger.log(logging.DEBUG,'\n'.join([error.text for error in log]))
-		return False
-	if log.has_inconsistencies():
-		inconsistencies = list(log.inconsistencies)
-		logger.warning('Filing %s has %d INCONSISTENCIES!',url,len(inconsistencies))
-		if logging.getLogger().isEnabledFor(logging.DEBUG):
-			logger.log(logging.DEBUG,'\n'.join([error.text for error in inconsistencies]))
-	else:
-		logger.info('Filing %s is VALID!',url)
-	return True
-	
 def parse_args():
-	"""Returns the arguments and options passed to the script."""
-	parser = argparse.ArgumentParser(description='Validates all filings contained in the given EDGAR RSS feed from the SEC archive.')
-	parser.add_argument('rss_feeds', metavar='RSS', nargs='+', help='EDGAR RSS feed file')
-	parser.add_argument('--log', metavar='LOGFILE', dest='log_file', help='specify output log file')
-	parser.add_argument('--log-level', type=int, default=logging.INFO, help='specify min. log level (use 10 to enable detailed error messages)')
-	parser.add_argument('--cik', help='CIK number')
-	parser.add_argument('--sic', help='SIC number')
-	parser.add_argument('--form-type', help='Form type (10-K,10-Q,...)')
-	parser.add_argument('--company', help='Company name')
-	parser.add_argument('--threads', type=int, default=8, dest='max_threads', help='specify max number of threads')
-	args = parser.parse_args()
-	args.company_re = re.compile(args.company, re.I) if args.company else None
-	if args.cik:
-		args.cik = int(args.cik)
-	if args.sic:
-		args.sic = int(args.sic)
-	return args
-	
+    """Returns the arguments and options passed to the script."""
+    parser = argparse.ArgumentParser(description='Validates all filings contained in the given EDGAR RSS feed from the SEC archive.')
+    parser.add_argument('rss_feeds', metavar='RSS', nargs='+', help='EDGAR RSS feed file')
+    parser.add_argument('-l', '--log', metavar='LOG_FILE', dest='log_file', help='log output file')
+    parser.add_argument('--log-level', metavar='LOG_LEVEL', dest='log_level', choices=['ERROR', 'WARNING', 'INFO', 'DEBUG'], default='INFO', help='log level (ERROR|WARNING|INFO|DEBUG)')
+    parser.add_argument('--cik', help='CIK number')
+    parser.add_argument('--sic', help='SIC number')
+    parser.add_argument('--form-type', help='Form type (10-K,10-Q,...)')
+    parser.add_argument('--company', help='Company name')
+    parser.add_argument('--threads', type=int, default=multiprocessing.cpu_count(), dest='max_threads', help='specify max number of threads')
+    args = parser.parse_args()
+    args.company_re = re.compile(args.company, re.I) if args.company else None
+    if args.cik:
+        args.cik = int(args.cik)
+    if args.sic:
+        args.sic = int(args.sic)
+    return args
+    
 def setup_logging(args):
-	"""Setup the Python logging infrastructure."""
-	global logger
-	if args.log_file:
-		logging.basicConfig(format='%(asctime)s %(levelname)s %(message)s',filename=args.log_file,filemode='w',level=args.log_level)
-	else:
-		logging.basicConfig(format='%(asctime)s %(levelname)s %(message)s',level=args.log_level)
-	logger = logging.getLogger('default')
-	
-def main():
-	# Parse script arguments
-	args = parse_args()	
-	# Setup python logging framework
-	setup_logging(args)
+    """Setup the Python logging infrastructure."""
+    global logger
+    levels = {'ERROR': logging.ERROR, 'WARNING': logging.WARNING, 'INFO': logging.INFO, 'DEBUG': logging.DEBUG}    
+    if args.log_file:
+        logging.basicConfig(format='%(asctime)s %(levelname)s %(message)s',filename=args.log_file,filemode='w',level=levels[args.log_level])
+    else:
+        logging.basicConfig(format='%(asctime)s %(levelname)s %(message)s',level=levels[args.log_level])
+    logger = logging.getLogger('default')
+    
+def collect_feeds(args):
+    """Returns an generator of the resolved, absolute RSS file paths."""
+    for filepath in args.rss_feeds:
+        for resolved_filepath in glob.iglob(os.path.abspath(filepath)):
+            yield resolved_filepath
 
-	rss_schema = load_rss_schema()
-	for arg in sys.argv[1:]:
-		for file in glob.glob(arg):
-			logger.info('Loading rss file %s',file)
-			rss_feed = load_rss_feed(urllib.request.pathname2url(file),rss_schema)
-			filings = parse_rss_feed(rss_feed,args)
-			
-			logger.info('Processing %d filings...',len(filings))
-			with concurrent.futures.ThreadPoolExecutor(max_workers=args.max_threads) as executor:
-				futures = [executor.submit(validate,url) for url in filings]
-				for future in concurrent.futures.as_completed(futures):
-					future.result()
+def main():
+    # Parse script arguments
+    args = parse_args() 
+    # Setup python logging framework
+    setup_logging(args)
+
+    # Validate all filings in the given RSS feeds one month after another
+    for filepath in collect_feeds(args):
+
+        # Load EDGAR filing metadata from RSS feed (and filter out all non 10-K/10-Q filings or companies without an assigned ticker symbol)
+        filings = []
+        for filing in feed_tools.read_feed(filepath):
+            # Google to Alphabet reorganization
+            if filing['cikNumber'] == 1288776:
+                filing['cikNumber'] = 1652044
+            if args.form_type is None or args.form_type == filing['formType']:
+                if args.sic is None or args.sic == filing['assignedSic']:
+                    if args.cik is None or args.cik == filing['cikNumber']:
+                        filings.append(filing)
+
+        # Validate the selected XBRL filings
+        validate_filings(filings[:100], args.max_threads)
 
 if __name__ == '__main__':
-	start = time.clock()
-	main()
-	end = time.clock()
-	print('Finished in ',end-start)
+    start = time.perf_counter()
+    main()
+    end = time.perf_counter()
+    print('Finished validation in ',end-start)

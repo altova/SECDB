@@ -24,21 +24,35 @@ def main():
 	build_secdb.args.company_re = None
 	build_secdb.args.sic = None
 	build_secdb.args.form_type = None
+	build_secdb.args.month = None
+	build_secdb.args.start_from = '2010-01'
+
 	# Setup python logging framework
 	build_secdb.setup_logging(build_secdb.args.log_file)
+	build_secdb.logger.info('Daily update started')
 	
 	if build_secdb.args.update_tickers:
 		argp = tickers_cik.mk_arg_parser()
 		opts = argp.parse_args(["update", "--now=logs/tickers","--db=%s" %build_secdb.args.db_name, "--tickers-from-db"])
-		tickers_cik.update_cmd(opts)
+		try:
+			tickers_cik.update_cmd(opts)
+		except:
+			build_secdb.logger.exception('Daily update ticker update failed') 
 
-	feeds = download_feeds.download_feeds()
-	for feed in feeds:
-		download_filings.download_filings(feed,build_secdb.args)
-		build_secdb.build_secdb(feeds)
+	try:
+		feeds = download_feeds.download_feeds(build_secdb.args)
+		for feed in feeds:
+			build_secdb.logger.info('Daily update of feed %s', feed)
+			download_filings.download_filings(feed,build_secdb.args)
+			build_secdb.build_secdb(feeds)
+	except:
+		build_secdb.logger.exception('Daily update failed')
+		sys.exit(1)
+	build_secdb.logger.info('Daily update finished')
+
 
 if __name__ == '__main__':
-	start = time.clock()
+	start = time.perf_counter()
 	main()
-	end = time.clock()
+	end = time.perf_counter()
 	print('Finished in ',end-start)

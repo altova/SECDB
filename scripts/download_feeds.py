@@ -38,8 +38,6 @@ def download_feeds(args=None):
 	"""Returns a list absolute file paths to any new or missing EDGAR RSS feeds that were downloaded."""
 	feeds = []
 
-	start_from = args.start_from if args else '2005-04'
-	
 	if args and args.month:
 	
 		feed = feed_tools.Feed(*(int(i) for i in args.month.split('-')))
@@ -47,11 +45,12 @@ def download_feeds(args=None):
 		
 	else:
 
+		# Download any missing or new RSS feeds from 2010 until now
+		start_from = args.start_from if args else '2010-01'
+		feed_start = feed_tools.Feed(*(int(i) for i in start_from.split('-')))
 		today = datetime.date.today()
 		current_feed = feed_tools.Feed(today.year,today.month)
 
-		# Download any missing or new RSS feeds from 2005 until now
-		feed_start = feed_tools.Feed(*(int(i) for i in start_from.split('-')))
 		feed = feed_start
 		while feed <= current_feed:
 			if not os.path.exists(os.path.join(feed_dir,feed.filename)):
@@ -74,7 +73,7 @@ def parse_args():
 	parser = argparse.ArgumentParser(description='Downloads EDGAR RSS feed files for all months and years from the SEC archive (skips already downloaded RSS feeds)')
 	parser.add_argument('--log', metavar='LOGFILE', dest='log_file', help='specify output log file')
 	parser.add_argument('--month', metavar='YYYY-MM', help='download EDGAR RSS feed only for the given month (in YYYY-MM format)')
-	parser.add_argument('--from', metavar='YYYY-MM', dest='start_from', default='2005-04', help='download EDGAR RSS feeds starting from the given month (in YYYY-MM format)')
+	parser.add_argument('--from', metavar='YYYY-MM', dest='start_from', default='2010-01', help='download EDGAR RSS feeds starting from the given month (in YYYY-MM format)')
 	return parser.parse_args()
 
 def setup_logging(log_file):
@@ -95,9 +94,9 @@ def main():
 	download_feeds(args)
 
 if __name__ == '__main__':
-	start = time.clock()
+	start = time.perf_counter()
 	main()
-	end = time.clock()
+	end = time.perf_counter()
 	print('Finished in ',end-start)
 else:
 	# create logger

@@ -21,6 +21,7 @@ __license__ = 'http://www.apache.org/licenses/LICENSE-2.0'
 
 import feed_tools
 import sys,re,time,os.path,urllib.request,urllib.error,glob,logging,argparse,concurrent.futures
+import ssl
 
 def exists_filing(dir, url, length):
 	"""Returns True if the filing already has been downloaded."""
@@ -34,7 +35,10 @@ def download_filing(dir, url, max_retries=3):
 	while max_retries > 0:
 		try:
 			logger.info('Downloading filing %s',url)
-			urllib.request.urlretrieve(url,filepath)
+			with urllib.request.urlopen( url, context=ssl.SSLContext() ) as f:
+				with open( filepath, 'wb' ) as O:
+					O.write( f.read() )
+
 		except OSError:
 			logger.info('Retry downloading filing %s',url)
 			max_retries -= 1
@@ -69,7 +73,7 @@ def download_filings(feedpath,args=None):
 				continue
 		if 'enclosureUrl' in filing and not exists_filing(dir,filing['enclosureUrl'],filing['enclosureLength']):
 			filing_urls.append(filing['enclosureUrl'])
-		if args and args.with_exhibits:
+		if args and getattr(args,'with_exhibits',False):
 			filing_urls.extend( filing.get( 'exhibitList', [] ) )
 
 	logger.info("Start downloading %d new filings",len(filing_urls))
@@ -126,9 +130,9 @@ def main():
 		download_filings(feedpath,args)
 
 if __name__ == '__main__':
-	start = time.clock()
+	start = time.perf_counter()
 	main()
-	end = time.clock()
+	end = time.perf_counter()
 	print('Finished in ',end-start)
 else:
 	# create logger

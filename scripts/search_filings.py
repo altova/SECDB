@@ -26,6 +26,8 @@ import re, sys, os, json, time, datetime, argparse, concurrent.futures, urllib, 
 gsRootDir = os.sep.join(os.path.abspath(__file__).split(os.sep)[:-2])
 gsRootURL = 'file://'+urllib.request.pathname2url(gsRootDir)+'/'
 
+edgar_ns_list = ('http://www.sec.gov/Archives/edgar','https://www.sec.gov/Archives/edgar')
+
 def load_rss_schema():
 	filepath = urllib.parse.urljoin(gsRootURL,'xsd/rss.xsd')
 	rss_schema, log = xsd.Schema.create_from_url(filepath)
@@ -40,17 +42,23 @@ def load_rss_feed(filename,rss_schema):
 		raise Exception('\n'.join([error.text for error in log]))
 	return rss_feed
 
-def child_as_str(elem,name):
-	child = elem.find_child_element((name,'http://www.sec.gov/Archives/edgar'))
+def child_as_str(elem,qname):
+	child = elem.find_child_element(qname)
 	if child:
 		return str(child.schema_actual_value)
 	return None
 
-def child_as_int(elem,name):
-	child = elem.find_child_element((name,'http://www.sec.gov/Archives/edgar'))
+def child_as_int(elem,qname):
+	child = elem.find_child_element(qname)
 	if child:
 		return int(child.schema_actual_value)
 	return None
+
+def get_xbrl_filing_child(item):
+    for edgar_ns in edgar_ns_list:
+        xbrlFiling = item.find_child_element(('xbrlFiling',edgar_ns))
+        if xbrlFiling:
+            return xbrlFiling
 
 def find_filings(file,rss_schema,args):
 	rss_feed = load_rss_feed(urllib.request.pathname2url(file),rss_schema)
@@ -62,37 +70,39 @@ def find_filings(file,rss_schema,args):
 	for channel in rss.element_children():
 		for item in channel.element_children():
 			if item.local_name == 'item':
-				xbrlFiling = item.find_child_element(('xbrlFiling','http://www.sec.gov/Archives/edgar'))
-				if xbrlFiling:
-					if args.company_re and not bool(args.company_re.match(child_as_str(xbrlFiling,'companyName'))):
+                xbrlFiling = get_xbrl_filing_child(item)
+                if xbrlFiling:
+                    edgar_ns = xbrlFiling.namespace_name
+
+					if args.company_re and not bool(args.company_re.match(child_as_str(xbrlFiling,('companyName',edgar_ns)))):
 						continue
-					if args.form_type and args.form_type != child_as_str(xbrlFiling,'formType'):
+					if args.form_type and args.form_type != child_as_str(xbrlFiling,('formType',edgar_ns)):
 						continue
-					if args.acc and args.acc != child_as_str(xbrlFiling,'accessionNumber'):
+					if args.acc and args.acc != child_as_str(xbrlFiling,('accessionNumber',edgar_ns)):
 						continue
-					if args.cik and args.cik != child_as_int(xbrlFiling,'cikNumber'):
+					if args.cik and args.cik != child_as_int(xbrlFiling,('cikNumber',edgar_ns)):
 						continue
-					if args.sic and args.sic != child_as_int(xbrlFiling,'assignedSic'):
+					if args.sic and args.sic != child_as_int(xbrlFiling,('assignedSic',edgar_ns)):
 						continue
 
 					filing = {}		
-					filing['companyName'] = child_as_str(xbrlFiling,'companyName')
-					filing['formType'] = child_as_str(xbrlFiling,'formType')
-					filing['filingDate'] = child_as_str(xbrlFiling,'filingDate')
-					filing['cikNumber'] = child_as_int(xbrlFiling,'cikNumber')
-					filing['accessionNumber'] = child_as_str(xbrlFiling,'accessionNumber')
-					filing['fileNumber'] = child_as_str(xbrlFiling,'fileNumber')
-					filing['acceptanceDatetime'] = child_as_str(xbrlFiling,'acceptanceDatetime')
-					filing['period'] = child_as_str(xbrlFiling,'period')
-					filing['assistantDirector'] = child_as_str(xbrlFiling,'assistantDirector')
-					filing['assignedSic'] = child_as_int(xbrlFiling,'assignedSic')
-					filing['otherCikNumbers'] = child_as_str(xbrlFiling,'otherCikNumbers')
-					filing['fiscalYearEnd'] = child_as_int(xbrlFiling,'fiscalYearEnd')
+					filing['companyName'] = child_as_str(xbrlFiling,('companyName',edgar_ns))
+					filing['formType'] = child_as_str(xbrlFiling,('formType',edgar_ns))
+					filing['filingDate'] = child_as_str(xbrlFiling,('filingDate',edgar_ns))
+					filing['cikNumber'] = child_as_int(xbrlFiling,('cikNumber',edgar_ns))
+					filing['accessionNumber'] = child_as_str(xbrlFiling,('accessionNumber',edgar_ns))
+					filing['fileNumber'] = child_as_str(xbrlFiling,('fileNumber',edgar_ns))
+					filing['acceptanceDatetime'] = child_as_str(xbrlFiling,('acceptanceDatetime',edgar_ns))
+					filing['period'] = child_as_str(xbrlFiling,('period',edgar_ns))
+					filing['assistantDirector'] = child_as_str(xbrlFiling,('assistantDirector',edgar_ns))
+					filing['assignedSic'] = child_as_int(xbrlFiling,('assignedSic',edgar_ns))
+					filing['otherCikNumbers'] = child_as_str(xbrlFiling,('otherCikNumbers',edgar_ns))
+					filing['fiscalYearEnd'] = child_as_int(xbrlFiling,('fiscalYearEnd',edgar_ns))
 					instanceUrl = None
-					xbrlFiles = xbrlFiling.find_child_element(('xbrlFiles','http://www.sec.gov/Archives/edgar'))
+					xbrlFiles = xbrlFiling.find_child_element(('xbrlFiles',egar_ns))
 					for xbrlFile in xbrlFiles.element_children():
-						if xbrlFile.find_attribute(('type','http://www.sec.gov/Archives/edgar')).normalized_value == 'EX-101.INS':
-							url = xbrlFile.find_attribute(('url','http://www.sec.gov/Archives/edgar')).normalized_value
+						if xbrlFile.find_attribute(('type',egar_ns)).normalized_value == 'EX-101.INS':
+							url = xbrlFile.find_attribute(('url',egar_ns)).normalized_value
 							instanceUrl = dir+'/'+filing['accessionNumber']+'-xbrl.zip%7Czip/'+url.split('/')[-1]
 							break
 					filing['instanceUrl'] = instanceUrl
@@ -143,7 +153,7 @@ def main():
 	print('Found %d filings'%len(filings))
 	
 if __name__ == '__main__':
-	start = time.clock()
+	start = time.perf_counter()
 	main()
-	end = time.clock()
+	end = time.perf_counter()
 	print('Finished in ',end-start)

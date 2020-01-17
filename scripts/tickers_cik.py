@@ -23,7 +23,10 @@ import urllib.request
 import xml.etree.ElementTree as ET
 import argparse
 import sqlite3
+import socket
 import itertools
+import zipfile
+import ssl
 
 # for OTBCC see http://otce.finra.org/DailyList/Archives
 
@@ -34,30 +37,40 @@ TickerCikName = collections.namedtuple("TickerCikName", ["Symbol", "CIK", "Name"
 
 stock_exchanges = ('nasdaq', 'nyse', 'amex')
 
-tickers_host = "www.nasdaq.com"
+# See https://stackoverflow.com/questions/25338608/download-all-stock-symbol-list-of-a-market
+tickers_host = "old.nasdaq.com"
 tickers_path = "/screening/companies-by-name.aspx?letter=0&exchange=%s&render=download"
 
 sec_host = 'https://www.sec.gov'
 sec_symbol_path = "/cgi-bin/browse-edgar?CIK=%s&Find=Search&owner=exclude&action=getcompany&output=atom"
 sec_cikcoleft_path = '/edgar/NYU/cik.coleft.c'
+sec_cik_fullindex_master_path = '/Archives/edgar/full-index/master.zip'
 
 def ticker_csv_name(ex):
     return '%s-tickers.csv' %ex
 
 def download_tickers(now, logf):
-    c = http.client.HTTPConnection(tickers_host)
+    #c = http.client.HTTPConnection(tickers_host)
     for ex in stock_exchanges:
-        print( 'fetching from', ex, '...', end=' ', file=logf )
-        with open(now +'/' + ticker_csv_name(ex), "bw") as f:
-            c.request("GET", tickers_path %ex)
-            r = c.getresponse()
-            print(r.status, r.reason, file=logf)
-            while not r.closed:
-                d = r.read(1024 * 64)
-                if not d:
-                    break
-                f.write(d)
-    c.close()
+        print( 'fetching from', ex, '...', end='\n', file=logf )
+        url = 'https://%s/%s'%(tickers_host,tickers_path %ex)
+        filename = now +'/' + ticker_csv_name(ex)
+        print( '\tdownloading %s and writing to %s'%(url,filename), end='\n', file=logf)
+        with urllib.request.urlopen( url, context=ssl.SSLContext() ) as f:
+            with open( filename, 'wb' ) as O:
+                O.write( f.read() )
+
+        #with open(now +'/' + ticker_csv_name(ex), "bw") as f:
+        #    print('url=http://%s/%s'%(tickers_host,tickers_path %ex), file=logf)
+        #    c.request("GET", tickers_path %ex)
+        #    r = c.getresponse()
+        #    print(r.status, r.reason, file=logf)
+        #    while not r.closed:
+        #        d = r.read(1024 * 64)
+        #        if not d:
+        #            break
+        #        f.write(d)
+    #c.close()
 
 def download_cik_coleft(now, logf):
     url = sec_host + sec_cikcoleft_path
@@ -67,6 +80,16 @@ def download_cik_coleft(now, logf):
         print(o.status, o.reason, file=logf)
         r = o.read()
         with open(now +'/' + os.path.basename(sec_cikcoleft_path), "bw") as f:
+            f.write(r)
+
+def download_cik_fullindex_master( now, logf ):
+    url = sec_host + sec_cik_fullindex_master_path
+    print( 'fetching from', url, '...', end=' ', file=logf)
+    O = urllib.request.build_opener()
+    with O.open(url) as o:
+        print(o.status, o.reason, file=logf)
+        r = o.read()
+        with open(now +'/' + os.path.basename(sec_cik_fullindex_master_path), "bw") as f:
             f.write(r)
 
 def existing_tickers_from_csv(f):
@@ -102,6 +125,19 @@ def cik_coleft_c(now):
             l = ' '.join(_.split()).split(':')
             yield CikColeftC(':'.join(l[:-2]).strip(),l[-2].strip())
 
+def cik_fullindex_master(now):
+    with zipfile.ZipFile(now + '/master.zip') as master:
+        with master.open('master.idx') as idx:
+            sep = '-'*80
+            for _ in idx:
+                l = _.decode(encoding='cp1252')
+                if l.startswith(sep):
+                    break
+
+            for _ in idx:
+                l = _.decode(encoding='cp1252')
+                l = reversed( l.split('|')[:2] )
+                yield CikColeftC._make(map(lambda t: t.strip(), l ))
 
 def ticker_cik_from_csv(csvname):
         with open(csvname) as f:
@@ -156,9 +192,10 @@ def sec_query_symbol(logf, symbol, opts):
     O = urllib.request.build_opener()
     try:
         print('### TRY', symbol, sec_url, file=logf)
-        with O.open(sec_url) as o:
+        with O.open(sec_url, timeout=60) as o:
             if o.headers.get_content_type() == 'application/atom+xml':
                 response = o.read().decode()
+                print('### RETRIEVED', symbol, file=logf)
                 if opts and opts.verbose > 1:
                     logf.write(response)
                 x = ET.fromstring(response)
@@ -178,7 +215,9 @@ def sec_query_symbol(logf, symbol, opts):
                     print(symbol, 'symbol-from-sec-multi', len(ciks), ciks, file=logf)
             else:
                 print('### NOATOM', symbol, file=logf)
-    except urllib.error.HTTPError as e:
+    except (urllib.error.HTTPError, urllib.error.URLError) as e:
+        print('### ERROR', symbol, sec_url, e, file=logf)
+    except socket.timeout as e:
         print('### ERROR', symbol, sec_url, e, file=logf)
     return (None, None)
 
@@ -213,7 +252,7 @@ def compare_tickers(oldcsv, newcsv):
     print('#new', len(new_tickers), 'new.symbols#', len(new_symbols), 'new.ciks#', len(new_ciks), file=logf)
 
     ciks = {}
-    for _ in cik_coleft_c(os.path.dirname(newcsv)):
+    for _ in cik_fullindex_master(os.path.dirname(newcsv)):
         ciks[ _.CIK] = _
 
     delta_ciks = old_ciks - new_ciks
@@ -266,12 +305,12 @@ def update_cmd(opts):
     logf = open(now + '/update.log', 'w')
 
     download_tickers(now, logf)
-    download_cik_coleft(now, logf)
+    download_cik_fullindex_master(now, logf)
 
     if opts.fetch_only:
         return
 
-    all_ccc = list(cik_coleft_c(now))
+    all_ccc = list(cik_fullindex_master(now))
     name_ccc = {}
     for name, cik in all_ccc:
         if not name in name_ccc:

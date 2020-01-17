@@ -93,7 +93,7 @@ def main():
 		generate_project(feedpath)
 
 if __name__ == '__main__':
-	start = time.clock()
+	start = time.perf_counter()
 	main()
-	end = time.clock()
+	end = time.perf_counter()
 	print('Finished in ',end-start)
