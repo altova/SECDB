@@ -117,13 +117,13 @@ class Feed:
                 O.write( f.read() )
         return filepath
 
-def load_rss_schema():
+def load_rss_schema( name ):
     """Returns an XML schema object of the RSS schema."""
     global rss_schema
     if rss_schema:
         return rss_schema
 
-    filepath = os.path.join(root_dir,'xsd','rss.xsd')
+    filepath = os.path.join(root_dir,'xsd',name)
     logger.info('Loading RSS schema %s',filepath)
 
     url = 'file://'+urllib.request.pathname2url(filepath)
@@ -136,7 +136,11 @@ def load_rss_schema():
 
 def load_feed(filepath):
     """Returns an XML instance object of the RSS feed."""
-    rss_schema = load_rss_schema()
+    xbrlrss = os.path.basename( filepath )
+    if xbrlrss < 'xbrlrss-2019-11.xml':
+        rss_schema = load_rss_schema('rss.xsd')
+    else:
+        rss_schema = load_rss_schema('rss-https.xsd')
 
     logger.info('Loading RSS feed %s',filepath)
 

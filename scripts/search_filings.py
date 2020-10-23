@@ -28,8 +28,8 @@ gsRootURL = 'file://'+urllib.request.pathname2url(gsRootDir)+'/'
 
 edgar_ns_list = ('http://www.sec.gov/Archives/edgar','https://www.sec.gov/Archives/edgar')
 
-def load_rss_schema():
-	filepath = urllib.parse.urljoin(gsRootURL,'xsd/rss.xsd')
+def load_rss_schema( name ):
+	filepath = urllib.parse.urljoin(gsRootURL,'xsd/%s' %name)
 	rss_schema, log = xsd.Schema.create_from_url(filepath)
 	if not rss_schema:
 		raise Exception('\n'.join([error.text for error in log]))
@@ -55,10 +55,10 @@ def child_as_int(elem,qname):
 	return None
 
 def get_xbrl_filing_child(item):
-    for edgar_ns in edgar_ns_list:
-        xbrlFiling = item.find_child_element(('xbrlFiling',edgar_ns))
-        if xbrlFiling:
-            return xbrlFiling
+	for edgar_ns in edgar_ns_list:
+		xbrlFiling = item.find_child_element(('xbrlFiling',edgar_ns))
+		if xbrlFiling:
+			return xbrlFiling
 
 def find_filings(file,rss_schema,args):
 	rss_feed = load_rss_feed(urllib.request.pathname2url(file),rss_schema)
@@ -70,9 +70,9 @@ def find_filings(file,rss_schema,args):
 	for channel in rss.element_children():
 		for item in channel.element_children():
 			if item.local_name == 'item':
-                xbrlFiling = get_xbrl_filing_child(item)
-                if xbrlFiling:
-                    edgar_ns = xbrlFiling.namespace_name
+				xbrlFiling = get_xbrl_filing_child(item)
+				if xbrlFiling:
+					edgar_ns = xbrlFiling.namespace_name
 
 					if args.company_re and not bool(args.company_re.match(child_as_str(xbrlFiling,('companyName',edgar_ns)))):
 						continue
@@ -99,10 +99,10 @@ def find_filings(file,rss_schema,args):
 					filing['otherCikNumbers'] = child_as_str(xbrlFiling,('otherCikNumbers',edgar_ns))
 					filing['fiscalYearEnd'] = child_as_int(xbrlFiling,('fiscalYearEnd',edgar_ns))
 					instanceUrl = None
-					xbrlFiles = xbrlFiling.find_child_element(('xbrlFiles',egar_ns))
+					xbrlFiles = xbrlFiling.find_child_element(('xbrlFiles',edgar_ns))
 					for xbrlFile in xbrlFiles.element_children():
-						if xbrlFile.find_attribute(('type',egar_ns)).normalized_value == 'EX-101.INS':
-							url = xbrlFile.find_attribute(('url',egar_ns)).normalized_value
+						if xbrlFile.find_attribute(('type',edgar_ns)).normalized_value == 'EX-101.INS':
+							url = xbrlFile.find_attribute(('url',edgar_ns)).normalized_value
 							instanceUrl = dir+'/'+filing['accessionNumber']+'-xbrl.zip%7Czip/'+url.split('/')[-1]
 							break
 					filing['instanceUrl'] = instanceUrl
@@ -138,9 +138,18 @@ def main():
 			feeds.append(file)
 	
 	filings = []
-	rss_schema = load_rss_schema()
+	rss_schema = load_rss_schema( 'rss.xsd')
+	rss_schema_https = load_rss_schema( 'rss-https.xsd')
 	with concurrent.futures.ThreadPoolExecutor(max_workers=args.max_threads) as executor:
-		futures = [executor.submit(find_filings,file,rss_schema,args) for file in feeds]		
+		#  with xbrlrss-2019-11.xml SEC switched the urls and namespaces from http to https (looks like search/replace)
+		futures = [
+			executor.submit(
+				find_filings,
+				file,
+				rss_schema if file < 'feeds/xbrlrss-2019-11.xml' else rss_schema_https,
+				args
+			) 
+			for file in feeds]		
 		for future in concurrent.futures.as_completed(futures):
 			try:
 				result = future.result()
