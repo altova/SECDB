@@ -18,7 +18,6 @@ import csv
 import collections
 import time
 import datetime
-import http.client
 import urllib.request
 import xml.etree.ElementTree as ET
 import argparse
@@ -27,6 +26,7 @@ import socket
 import itertools
 import zipfile
 import ssl
+from url_utils import mk_req
 
 # for OTBCC see http://otce.finra.org/DailyList/Archives
 
@@ -50,33 +50,20 @@ def ticker_csv_name(ex):
     return '%s-tickers.csv' %ex
 
 def download_tickers(now, logf):
-    #c = http.client.HTTPConnection(tickers_host)
     for ex in stock_exchanges:
         print( 'fetching from', ex, '...', end='\n', file=logf )
         url = 'https://%s/%s'%(tickers_host,tickers_path %ex)
         filename = now +'/' + ticker_csv_name(ex)
         print( '\tdownloading %s and writing to %s'%(url,filename), end='\n', file=logf)
-        with urllib.request.urlopen( url, context=ssl.SSLContext() ) as f:
+        with urllib.request.urlopen( mk_req( url ), context=ssl.SSLContext() ) as f:
             with open( filename, 'wb' ) as O:
                 O.write( f.read() )
-
-        #with open(now +'/' + ticker_csv_name(ex), "bw") as f:
-        #    print('url=http://%s/%s'%(tickers_host,tickers_path %ex), file=logf)
-        #    c.request("GET", tickers_path %ex)
-        #    r = c.getresponse()
-        #    print(r.status, r.reason, file=logf)
-        #    while not r.closed:
-        #        d = r.read(1024 * 64)
-        #        if not d:
-        #            break
-        #        f.write(d)
-    #c.close()
 
 def download_cik_coleft(now, logf):
     url = sec_host + sec_cikcoleft_path
     print( 'fetching from', url, '...', end=' ', file=logf)
     O = urllib.request.build_opener()
-    with O.open(url) as o:
+    with O.open(mk_req( url )) as o:
         print(o.status, o.reason, file=logf)
         r = o.read()
         with open(now +'/' + os.path.basename(sec_cikcoleft_path), "bw") as f:
@@ -86,7 +73,7 @@ def download_cik_fullindex_master( now, logf ):
     url = sec_host + sec_cik_fullindex_master_path
     print( 'fetching from', url, '...', end=' ', file=logf)
     O = urllib.request.build_opener()
-    with O.open(url) as o:
+    with O.open(mk_req( url )) as o:
         print(o.status, o.reason, file=logf)
         r = o.read()
         with open(now +'/' + os.path.basename(sec_cik_fullindex_master_path), "bw") as f:
@@ -192,7 +179,7 @@ def sec_query_symbol(logf, symbol, opts):
     O = urllib.request.build_opener()
     try:
         print('### TRY', symbol, sec_url, file=logf)
-        with O.open(sec_url, timeout=60) as o:
+        with O.open(mk_req( sec_url ), timeout=60) as o:
             if o.headers.get_content_type() == 'application/atom+xml':
                 response = o.read().decode()
                 print('### RETRIEVED', symbol, file=logf)
@@ -224,7 +211,7 @@ def sec_query_symbol(logf, symbol, opts):
 def has_filings_of_types(cik, types):
     O = urllib.request.build_opener()
     url = "https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK=%s&type=%s&dateb=&owner=exclude&output=atom" %(cik, os.path.commonprefix(types))
-    with O.open(url) as o:
+    with O.open(mk_req( sec_url ) ) as o:
         if o.headers.get_content_type() == 'application/atom+xml':
             r = o.read().decode()
             x = ET.fromstring(r)
@@ -257,7 +244,6 @@ def compare_tickers(oldcsv, newcsv):
 
     delta_ciks = old_ciks - new_ciks
     print("### ciks not in new", len(delta_ciks), file=logf)
-    O = urllib.request.build_opener()
     for _ in delta_ciks:
         print('  CIK =', _, end=' ... ', file=logf)
         if is_terminated(_):

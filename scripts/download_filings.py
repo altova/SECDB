@@ -22,6 +22,7 @@ __license__ = 'http://www.apache.org/licenses/LICENSE-2.0'
 import feed_tools
 import sys,re,time,os.path,urllib.request,urllib.error,glob,logging,argparse,concurrent.futures
 import ssl
+from url_utils import mk_req
 
 def exists_filing(dir, url, length):
 	"""Returns True if the filing already has been downloaded."""
@@ -35,7 +36,7 @@ def download_filing(dir, url, max_retries=3):
 	while max_retries > 0:
 		try:
 			logger.info('Downloading filing %s',url)
-			with urllib.request.urlopen( url, context=ssl.SSLContext() ) as f:
+			with urllib.request.urlopen( mk_req( url ), context=ssl.SSLContext() ) as f:
 				with open( filepath, 'wb' ) as O:
 					O.write( f.read() )
 

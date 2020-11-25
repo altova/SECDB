@@ -20,7 +20,7 @@ __license__ = 'http://www.apache.org/licenses/LICENSE-2.0'
 # 	raptorxmlxbrl script scripts/generate_xmlspy_project.py feeds/xbrlrss-2015-04.xml
 
 import feed_tools
-import sys,re,time,os.path,urllib.request,glob,argparse
+import sys,re,time,os.path,glob,argparse
 
 def collect_feeds(args):
 	"""Returns an generator of the resolved, absolute RSS file paths."""

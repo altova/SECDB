@@ -19,6 +19,7 @@ __license__ = 'http://www.apache.org/licenses/LICENSE-2.0'
 from altova_api.v2 import xml, xsd, xbrl
 import re,datetime,os.path,urllib.request,urllib.error,glob,logging
 import ssl
+from url_utils import mk_req
 
 # Workaround in case of SSL CERTIFICATE_VERIFY_FAILED issues
 #import ssl
@@ -48,7 +49,7 @@ xbrl_val_options = {
     # you can use most of the valxbrl RaptorXML+XBRL command options here, e.g.
     'deduplicate': True,
     'report-import-namespace-mismatch-as-warning': True,
-    'treat-custom-role-errors-as-warnings': True,
+    # 'treat-custom-role-errors-as-warnings': True,
     'summation-item-checks': False,
     #'utr': True,
 }
@@ -112,7 +113,7 @@ class Feed:
         """Downloads the EDGAR RSS feed from SEC and stores it into the given dir. Returns the full path to the downloaded file."""
         logger.info('Downloading RSS feed %s',self.url)
         filepath = os.path.join(dir,self.filename)
-        with urllib.request.urlopen( self.url, context=ssl.SSLContext() ) as f:
+        with urllib.request.urlopen( mk_req( self.url ), context=ssl.SSLContext() ) as f:
             with open( filepath, 'wb' ) as O:
                 O.write( f.read() )
         return filepath
