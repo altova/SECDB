@@ -1,5 +1,9 @@
+# Thank you for your interest. This repository is no longer receiving code updates.
+
+---
+
 Creating a SQLlite financial reporting database from XBRL filings in the SEC EDGAR system using Altova RaptorXML+XBRL
-=====================================================================================================================
+---------------------------------------------------------------------------------------------------------------------
 
 Introduction
 ------------
